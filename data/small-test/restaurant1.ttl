@@ -1,0 +1,1472 @@
+@prefix PREFIX1: <http://www.okkam.org/oaie/restaurant1-> .
+@prefix ontology_base1: <http://www.okkam.org/ontology_restaurant1.owl#> .
+
+PREFIX1:Restaurant0 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address0 ;
+    ontology_base1:name "arnie morton's of chicago" ;
+    ontology_base1:phone_number "310/246-1501" .
+
+PREFIX1:Restaurant1 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address1 ;
+    ontology_base1:name "art's delicatessen" ;
+    ontology_base1:phone_number "818/762-1221" .
+
+PREFIX1:Restaurant10 a ontology_base1:Restaurant ;
+    ontology_base1:category "asian" ;
+    ontology_base1:has_address PREFIX1:Address10 ;
+    ontology_base1:name "restaurant katsu" ;
+    ontology_base1:phone_number "213/665-1891" .
+
+PREFIX1:Restaurant100 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address100 ;
+    ontology_base1:name "fleur de lys" ;
+    ontology_base1:phone_number "415/673-7779" .
+
+PREFIX1:Restaurant101 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address101 ;
+    ontology_base1:name "fringale" ;
+    ontology_base1:phone_number "415/543-0573" .
+
+PREFIX1:Restaurant102 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address102 ;
+    ontology_base1:name "hawthorne lane" ;
+    ontology_base1:phone_number "415/777-9779" .
+
+PREFIX1:Restaurant103 a ontology_base1:Restaurant ;
+    ontology_base1:category "asian" ;
+    ontology_base1:has_address PREFIX1:Address103 ;
+    ontology_base1:name "khan toke thai house" ;
+    ontology_base1:phone_number "415/668-6654" .
+
+PREFIX1:Restaurant104 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address104 ;
+    ontology_base1:name "la folie" ;
+    ontology_base1:phone_number "415/776-5577" .
+
+PREFIX1:Restaurant105 a ontology_base1:Restaurant ;
+    ontology_base1:category "mediterranean" ;
+    ontology_base1:has_address PREFIX1:Address105 ;
+    ontology_base1:name "lulu" ;
+    ontology_base1:phone_number "415/495-5775" .
+
+PREFIX1:Restaurant106 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address106 ;
+    ontology_base1:name "masa's" ;
+    ontology_base1:phone_number "415/989-7154" .
+
+PREFIX1:Restaurant107 a ontology_base1:Restaurant ;
+    ontology_base1:category "asian" ;
+    ontology_base1:has_address PREFIX1:Address107 ;
+    ontology_base1:name "mifune japan center  kintetsu building" ;
+    ontology_base1:phone_number "415/922-0337" .
+
+PREFIX1:Restaurant108 a ontology_base1:Restaurant ;
+    ontology_base1:category "mediterranean" ;
+    ontology_base1:has_address PREFIX1:Address108 ;
+    ontology_base1:name "plumpjack cafe" ;
+    ontology_base1:phone_number "415/563-4755" .
+
+PREFIX1:Restaurant109 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address109 ;
+    ontology_base1:name "postrio" ;
+    ontology_base1:phone_number "415/776-7825" .
+
+PREFIX1:Restaurant11 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address11 ;
+    ontology_base1:name "l'orangerie" ;
+    ontology_base1:phone_number "310/652-9770" .
+
+PREFIX1:Restaurant110 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address110 ;
+    ontology_base1:name "ritz-carlton restaurant and dining room" ;
+    ontology_base1:phone_number "415/296-7465" .
+
+PREFIX1:Restaurant111 a ontology_base1:Restaurant ;
+    ontology_base1:category "italian" ;
+    ontology_base1:has_address PREFIX1:Address111 ;
+    ontology_base1:name "rose pistola" ;
+    ontology_base1:phone_number "415/399-0499" .
+
+PREFIX1:Restaurant112 a ontology_base1:Restaurant ;
+    ontology_base1:category "italian" ;
+    ontology_base1:has_address PREFIX1:Address112 ;
+    ontology_base1:name "adriano's ristorante" ;
+    ontology_base1:phone_number "310/475-9807" .
+
+PREFIX1:Restaurant12 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address12 ;
+    ontology_base1:name "le chardonnay" ;
+    ontology_base1:phone_number "213/655-8880" .
+
+PREFIX1:Restaurant13 a ontology_base1:Restaurant ;
+    ontology_base1:category "italian" ;
+    ontology_base1:has_address PREFIX1:Address13 ;
+    ontology_base1:name "locanda veneta" ;
+    ontology_base1:phone_number "310/274-1893" .
+
+PREFIX1:Restaurant14 a ontology_base1:Restaurant ;
+    ontology_base1:category "asian" ;
+    ontology_base1:has_address PREFIX1:Address14 ;
+    ontology_base1:name "matsuhisa" ;
+    ontology_base1:phone_number "310/659-9639" .
+
+PREFIX1:Restaurant15 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address15 ;
+    ontology_base1:name "the palm" ;
+    ontology_base1:phone_number "310/550-8811" .
+
+PREFIX1:Restaurant16 a ontology_base1:Restaurant ;
+    ontology_base1:category "californian" ;
+    ontology_base1:has_address PREFIX1:Address16 ;
+    ontology_base1:name "patina" ;
+    ontology_base1:phone_number "213/467-1108" .
+
+PREFIX1:Restaurant17 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address17 ;
+    ontology_base1:name "philippe's the original" ;
+    ontology_base1:phone_number "213/628-3781" .
+
+PREFIX1:Restaurant18 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address18 ;
+    ontology_base1:name "pinot bistro" ;
+    ontology_base1:phone_number "818/990-0500" .
+
+PREFIX1:Restaurant19 a ontology_base1:Restaurant ;
+    ontology_base1:category "italian" ;
+    ontology_base1:has_address PREFIX1:Address19 ;
+    ontology_base1:name "rex il ristorante" ;
+    ontology_base1:phone_number "213/627-2300" .
+
+PREFIX1:Restaurant2 a ontology_base1:Restaurant ;
+    ontology_base1:category "californian" ;
+    ontology_base1:has_address PREFIX1:Address2 ;
+    ontology_base1:name "hotel bel-air" ;
+    ontology_base1:phone_number "310/472-1211" .
+
+PREFIX1:Restaurant20 a ontology_base1:Restaurant ;
+    ontology_base1:category "californian" ;
+    ontology_base1:has_address PREFIX1:Address20 ;
+    ontology_base1:name "spago" ;
+    ontology_base1:phone_number "310/652-4025" .
+
+PREFIX1:Restaurant21 a ontology_base1:Restaurant ;
+    ontology_base1:category "italian" ;
+    ontology_base1:has_address PREFIX1:Address21 ;
+    ontology_base1:name "valentino" ;
+    ontology_base1:phone_number "310/829-4313" .
+
+PREFIX1:Restaurant22 a ontology_base1:Restaurant ;
+    ontology_base1:category "asian" ;
+    ontology_base1:has_address PREFIX1:Address22 ;
+    ontology_base1:name "yujean kang's gourmet chinese cuisine" ;
+    ontology_base1:phone_number "818/585-0855" .
+
+PREFIX1:Restaurant23 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address23 ;
+    ontology_base1:name "21 club" ;
+    ontology_base1:phone_number "212/582-7200" .
+
+PREFIX1:Restaurant24 a ontology_base1:Restaurant ;
+    ontology_base1:category "continental" ;
+    ontology_base1:has_address PREFIX1:Address24 ;
+    ontology_base1:name "aquavit" ;
+    ontology_base1:phone_number "212/307-7311" .
+
+PREFIX1:Restaurant25 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address25 ;
+    ontology_base1:name "aureole" ;
+    ontology_base1:phone_number "212/ 319-1660" .
+
+PREFIX1:Restaurant26 a ontology_base1:Restaurant ;
+    ontology_base1:category "coffee bar" ;
+    ontology_base1:has_address PREFIX1:Address26 ;
+    ontology_base1:name "cafe lalo" ;
+    ontology_base1:phone_number "212/496-6031" .
+
+PREFIX1:Restaurant27 a ontology_base1:Restaurant ;
+    ontology_base1:category "continental" ;
+    ontology_base1:has_address PREFIX1:Address27 ;
+    ontology_base1:name "cafe des artistes" ;
+    ontology_base1:phone_number "212/877-3500" .
+
+PREFIX1:Restaurant28 a ontology_base1:Restaurant ;
+    ontology_base1:category "italian" ;
+    ontology_base1:has_address PREFIX1:Address28 ;
+    ontology_base1:name "carmine's" ;
+    ontology_base1:phone_number "212/362-2200" .
+
+PREFIX1:Restaurant29 a ontology_base1:Restaurant ;
+    ontology_base1:category "delicatessen" ;
+    ontology_base1:has_address PREFIX1:Address29 ;
+    ontology_base1:name "carnegie deli" ;
+    ontology_base1:phone_number "212/757-2245" .
+
+PREFIX1:Restaurant3 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address3 ;
+    ontology_base1:name "cafe bizou" ;
+    ontology_base1:phone_number "818/788-3536" .
+
+PREFIX1:Restaurant30 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address30 ;
+    ontology_base1:name "chanterelle" ;
+    ontology_base1:phone_number "212/966-6960" .
+
+PREFIX1:Restaurant31 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address31 ;
+    ontology_base1:name "daniel" ;
+    ontology_base1:phone_number "212/288-0033" .
+
+PREFIX1:Restaurant32 a ontology_base1:Restaurant ;
+    ontology_base1:category "asian" ;
+    ontology_base1:has_address PREFIX1:Address32 ;
+    ontology_base1:name "dawat" ;
+    ontology_base1:phone_number "212/355-7555" .
+
+PREFIX1:Restaurant33 a ontology_base1:Restaurant ;
+    ontology_base1:category "italian" ;
+    ontology_base1:has_address PREFIX1:Address33 ;
+    ontology_base1:name "felidia" ;
+    ontology_base1:phone_number "212/758-1479" .
+
+PREFIX1:Restaurant34 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address34 ;
+    ontology_base1:name "four seasons grill room" ;
+    ontology_base1:phone_number "212/754-9494" .
+
+PREFIX1:Restaurant35 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address35 ;
+    ontology_base1:name "gotham bar & grill" ;
+    ontology_base1:phone_number "212/620-4020" .
+
+PREFIX1:Restaurant36 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address36 ;
+    ontology_base1:name "gramercy tavern" ;
+    ontology_base1:phone_number "212/477-0777" .
+
+PREFIX1:Restaurant37 a ontology_base1:Restaurant ;
+    ontology_base1:category "tel caribbean" ;
+    ontology_base1:has_address PREFIX1:Address37 ;
+    ontology_base1:name "island spice" ;
+    ontology_base1:phone_number "212/765-1737" .
+
+PREFIX1:Restaurant38 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address38 ;
+    ontology_base1:name "jo jo" ;
+    ontology_base1:phone_number "212/223-5656" .
+
+PREFIX1:Restaurant39 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address39 ;
+    ontology_base1:name "la caravelle" ;
+    ontology_base1:phone_number "212/586-4252" .
+
+PREFIX1:Restaurant4 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address4 ;
+    ontology_base1:name "campanile" ;
+    ontology_base1:phone_number "213/938-1447" .
+
+PREFIX1:Restaurant40 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address40 ;
+    ontology_base1:name "la cote basque" ;
+    ontology_base1:phone_number "212/688-6525" .
+
+PREFIX1:Restaurant41 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address41 ;
+    ontology_base1:name "le bernardin" ;
+    ontology_base1:phone_number "212/489-1515" .
+
+PREFIX1:Restaurant42 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address42 ;
+    ontology_base1:name "les celebrites" ;
+    ontology_base1:phone_number "212/484-5113" .
+
+PREFIX1:Restaurant43 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address43 ;
+    ontology_base1:name "lespinasse" ;
+    ontology_base1:phone_number "212/339-6719" .
+
+PREFIX1:Restaurant44 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address44 ;
+    ontology_base1:name "lutece" ;
+    ontology_base1:phone_number "212/752-2225" .
+
+PREFIX1:Restaurant45 a ontology_base1:Restaurant ;
+    ontology_base1:category "seafood" ;
+    ontology_base1:has_address PREFIX1:Address45 ;
+    ontology_base1:name "manhattan ocean club" ;
+    ontology_base1:phone_number "212/ 371-7777" .
+
+PREFIX1:Restaurant46 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address46 ;
+    ontology_base1:name "march" ;
+    ontology_base1:phone_number "212/754-6272" .
+
+PREFIX1:Restaurant47 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address47 ;
+    ontology_base1:name "mesa grill" ;
+    ontology_base1:phone_number "212/807-7400" .
+
+PREFIX1:Restaurant48 a ontology_base1:Restaurant ;
+    ontology_base1:category "mexican" ;
+    ontology_base1:has_address PREFIX1:Address48 ;
+    ontology_base1:name "mi cocina" ;
+    ontology_base1:phone_number "212/627-8273" .
+
+PREFIX1:Restaurant49 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address49 ;
+    ontology_base1:name "montrachet" ;
+    ontology_base1:phone_number "212/ 219-2777" .
+
+PREFIX1:Restaurant5 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address5 ;
+    ontology_base1:name "chinois on main" ;
+    ontology_base1:phone_number "310/392-9025" .
+
+PREFIX1:Restaurant50 a ontology_base1:Restaurant ;
+    ontology_base1:category "seafood" ;
+    ontology_base1:has_address PREFIX1:Address50 ;
+    ontology_base1:name "oceana" ;
+    ontology_base1:phone_number "212/759-5941" .
+
+PREFIX1:Restaurant51 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address51 ;
+    ontology_base1:name "park avenue cafe" ;
+    ontology_base1:phone_number "212/644-1900" .
+
+PREFIX1:Restaurant52 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address52 ;
+    ontology_base1:name "petrossian" ;
+    ontology_base1:phone_number "212/245-2214" .
+
+PREFIX1:Restaurant53 a ontology_base1:Restaurant ;
+    ontology_base1:category "mediterranean" ;
+    ontology_base1:has_address PREFIX1:Address53 ;
+    ontology_base1:name "picholine" ;
+    ontology_base1:phone_number "212/724-8585" .
+
+PREFIX1:Restaurant54 a ontology_base1:Restaurant ;
+    ontology_base1:category "seafood" ;
+    ontology_base1:has_address PREFIX1:Address54 ;
+    ontology_base1:name "pisces" ;
+    ontology_base1:phone_number "212/260-6660" .
+
+PREFIX1:Restaurant55 a ontology_base1:Restaurant ;
+    ontology_base1:category "or 212/632-5100 american" ;
+    ontology_base1:has_address PREFIX1:Address55 ;
+    ontology_base1:name "rainbow room" ;
+    ontology_base1:phone_number "212/632-5000" .
+
+PREFIX1:Restaurant56 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address56 ;
+    ontology_base1:name "river cafe" ;
+    ontology_base1:phone_number "718/522-5200" .
+
+PREFIX1:Restaurant57 a ontology_base1:Restaurant ;
+    ontology_base1:category "italian" ;
+    ontology_base1:has_address PREFIX1:Address57 ;
+    ontology_base1:name "san domenico" ;
+    ontology_base1:phone_number "212/265-5959" .
+
+PREFIX1:Restaurant58 a ontology_base1:Restaurant ;
+    ontology_base1:category "delicatessen" ;
+    ontology_base1:has_address PREFIX1:Address58 ;
+    ontology_base1:name "second avenue deli" ;
+    ontology_base1:phone_number "212/677-0606" .
+
+PREFIX1:Restaurant59 a ontology_base1:Restaurant ;
+    ontology_base1:category "asian" ;
+    ontology_base1:has_address PREFIX1:Address59 ;
+    ontology_base1:name "seryna" ;
+    ontology_base1:phone_number "212/980-9393" .
+
+PREFIX1:Restaurant6 a ontology_base1:Restaurant ;
+    ontology_base1:category "californian" ;
+    ontology_base1:has_address PREFIX1:Address6 ;
+    ontology_base1:name "citrus" ;
+    ontology_base1:phone_number "213/857-0034" .
+
+PREFIX1:Restaurant60 a ontology_base1:Restaurant ;
+    ontology_base1:category "asian" ;
+    ontology_base1:has_address PREFIX1:Address60 ;
+    ontology_base1:name "shun lee west" ;
+    ontology_base1:phone_number "212/371-8844" .
+
+PREFIX1:Restaurant61 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address61 ;
+    ontology_base1:name "sign of the dove" ;
+    ontology_base1:phone_number "212/861-8080" .
+
+PREFIX1:Restaurant62 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address62 ;
+    ontology_base1:name "smith & wollensky" ;
+    ontology_base1:phone_number "212/753-1530" .
+
+PREFIX1:Restaurant63 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address63 ;
+    ontology_base1:name "tavern on the green" ;
+    ontology_base1:phone_number "212/873-3200" .
+
+PREFIX1:Restaurant64 a ontology_base1:Restaurant ;
+    ontology_base1:category "mediterranean" ;
+    ontology_base1:has_address PREFIX1:Address64 ;
+    ontology_base1:name "uncle nick's" ;
+    ontology_base1:phone_number "212/315-1726" .
+
+PREFIX1:Restaurant65 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address65 ;
+    ontology_base1:name "union square cafe" ;
+    ontology_base1:phone_number "212/243-4020" .
+
+PREFIX1:Restaurant66 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address66 ;
+    ontology_base1:name "virgil's" ;
+    ontology_base1:phone_number "212/ 921-9494" .
+
+PREFIX1:Restaurant67 a ontology_base1:Restaurant ;
+    ontology_base1:category "asian" ;
+    ontology_base1:has_address PREFIX1:Address67 ;
+    ontology_base1:name "chin's" ;
+    ontology_base1:phone_number "702/733-8899" .
+
+PREFIX1:Restaurant68 a ontology_base1:Restaurant ;
+    ontology_base1:category "southwestern" ;
+    ontology_base1:has_address PREFIX1:Address68 ;
+    ontology_base1:name "coyote cafe" ;
+    ontology_base1:phone_number "702/891-7349" .
+
+PREFIX1:Restaurant69 a ontology_base1:Restaurant ;
+    ontology_base1:category "continental" ;
+    ontology_base1:has_address PREFIX1:Address69 ;
+    ontology_base1:name "le montrachet" ;
+    ontology_base1:phone_number "702/732-5111" .
+
+PREFIX1:Restaurant7 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address7 ;
+    ontology_base1:name "fenix" ;
+    ontology_base1:phone_number "213/848-6677" .
+
+PREFIX1:Restaurant70 a ontology_base1:Restaurant ;
+    ontology_base1:category "continental" ;
+    ontology_base1:has_address PREFIX1:Address70 ;
+    ontology_base1:name "palace court" ;
+    ontology_base1:phone_number "702/731-7547" .
+
+PREFIX1:Restaurant71 a ontology_base1:Restaurant ;
+    ontology_base1:category "seafood" ;
+    ontology_base1:has_address PREFIX1:Address71 ;
+    ontology_base1:name "second street grille" ;
+    ontology_base1:phone_number "702/385-3232" .
+
+PREFIX1:Restaurant72 a ontology_base1:Restaurant ;
+    ontology_base1:category "steak houses" ;
+    ontology_base1:has_address PREFIX1:Address72 ;
+    ontology_base1:name "steak house" ;
+    ontology_base1:phone_number "702/734-0410" .
+
+PREFIX1:Restaurant73 a ontology_base1:Restaurant ;
+    ontology_base1:category "seafood" ;
+    ontology_base1:has_address PREFIX1:Address73 ;
+    ontology_base1:name "tillerman" ;
+    ontology_base1:phone_number "702/731-4036" .
+
+PREFIX1:Restaurant74 a ontology_base1:Restaurant ;
+    ontology_base1:category "italian" ;
+    ontology_base1:has_address PREFIX1:Address74 ;
+    ontology_base1:name "abruzzi" ;
+    ontology_base1:phone_number "404/261-8186" .
+
+PREFIX1:Restaurant75 a ontology_base1:Restaurant ;
+    ontology_base1:category "international" ;
+    ontology_base1:has_address PREFIX1:Address75 ;
+    ontology_base1:name "bacchanalia" ;
+    ontology_base1:phone_number "404/365-0410" .
+
+PREFIX1:Restaurant76 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address76 ;
+    ontology_base1:name "bone's" ;
+    ontology_base1:phone_number "404/237-2663" .
+
+PREFIX1:Restaurant77 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address77 ;
+    ontology_base1:name "brasserie le coze" ;
+    ontology_base1:phone_number "404/266-1440" .
+
+PREFIX1:Restaurant78 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address78 ;
+    ontology_base1:name "buckhead diner" ;
+    ontology_base1:phone_number "404/262-3336" .
+
+PREFIX1:Restaurant79 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address79 ;
+    ontology_base1:name "ciboulette" ;
+    ontology_base1:phone_number "404/874-7600" .
+
+PREFIX1:Restaurant8 a ontology_base1:Restaurant ;
+    ontology_base1:category "californian" ;
+    ontology_base1:has_address PREFIX1:Address8 ;
+    ontology_base1:name "granita" ;
+    ontology_base1:phone_number "310/456-0488" .
+
+PREFIX1:Restaurant80 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address80 ;
+    ontology_base1:name "delectables" ;
+    ontology_base1:phone_number "404/681-2909" .
+
+PREFIX1:Restaurant81 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address81 ;
+    ontology_base1:name "georgia grille" ;
+    ontology_base1:phone_number "404/352-3517" .
+
+PREFIX1:Restaurant82 a ontology_base1:Restaurant ;
+    ontology_base1:category "international" ;
+    ontology_base1:has_address PREFIX1:Address82 ;
+    ontology_base1:name "hedgerose heights inn" ;
+    ontology_base1:phone_number "404/233-7673" .
+
+PREFIX1:Restaurant83 a ontology_base1:Restaurant ;
+    ontology_base1:category "asian" ;
+    ontology_base1:has_address PREFIX1:Address83 ;
+    ontology_base1:name "heera of india" ;
+    ontology_base1:phone_number "404/876-4408" .
+
+PREFIX1:Restaurant84 a ontology_base1:Restaurant ;
+    ontology_base1:category "caribbean" ;
+    ontology_base1:has_address PREFIX1:Address84 ;
+    ontology_base1:name "indigo coastal grill" ;
+    ontology_base1:phone_number "404/876-0676" .
+
+PREFIX1:Restaurant85 a ontology_base1:Restaurant ;
+    ontology_base1:category "italian" ;
+    ontology_base1:has_address PREFIX1:Address85 ;
+    ontology_base1:name "la grotta" ;
+    ontology_base1:phone_number "404/231-1368" .
+
+PREFIX1:Restaurant86 a ontology_base1:Restaurant ;
+    ontology_base1:category "southern" ;
+    ontology_base1:has_address PREFIX1:Address86 ;
+    ontology_base1:name "mary mac's tea room" ;
+    ontology_base1:phone_number "404/876-1800" .
+
+PREFIX1:Restaurant87 a ontology_base1:Restaurant ;
+    ontology_base1:category "continental" ;
+    ontology_base1:has_address PREFIX1:Address87 ;
+    ontology_base1:name "nikolai's roof" ;
+    ontology_base1:phone_number "404/221-6362" .
+
+PREFIX1:Restaurant88 a ontology_base1:Restaurant ;
+    ontology_base1:category "international" ;
+    ontology_base1:has_address PREFIX1:Address88 ;
+    ontology_base1:name "pano's and paul's" ;
+    ontology_base1:phone_number "404/261-3662" .
+
+PREFIX1:Restaurant89 a ontology_base1:Restaurant ;
+    ontology_base1:category "ext 6108 international" ;
+    ontology_base1:has_address PREFIX1:Address89 ;
+    ontology_base1:name "cafe  ritz-carlton  buckhead" ;
+    ontology_base1:phone_number "404/237-2700" .
+
+PREFIX1:Restaurant9 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address9 ;
+    ontology_base1:name "grill on the alley" ;
+    ontology_base1:phone_number "310/276-0615" .
+
+PREFIX1:Restaurant90 a ontology_base1:Restaurant ;
+    ontology_base1:category "international" ;
+    ontology_base1:has_address PREFIX1:Address90 ;
+    ontology_base1:name "dining room  ritz-carlton  buckhead" ;
+    ontology_base1:phone_number "404/237-2700" .
+
+PREFIX1:Restaurant91 a ontology_base1:Restaurant ;
+    ontology_base1:category "continental" ;
+    ontology_base1:has_address PREFIX1:Address91 ;
+    ontology_base1:name "restaurant  ritz-carlton  atlanta" ;
+    ontology_base1:phone_number "404/659-0400" .
+
+PREFIX1:Restaurant92 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address92 ;
+    ontology_base1:name "toulouse" ;
+    ontology_base1:phone_number "404/351-9533" .
+
+PREFIX1:Restaurant93 a ontology_base1:Restaurant ;
+    ontology_base1:category "italian" ;
+    ontology_base1:has_address PREFIX1:Address93 ;
+    ontology_base1:name "veni vidi vici" ;
+    ontology_base1:phone_number "404/875-8424" .
+
+PREFIX1:Restaurant94 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address94 ;
+    ontology_base1:name "alain rondelli" ;
+    ontology_base1:phone_number "415/387-0408" .
+
+PREFIX1:Restaurant95 a ontology_base1:Restaurant ;
+    ontology_base1:category "seafood" ;
+    ontology_base1:has_address PREFIX1:Address95 ;
+    ontology_base1:name "aqua" ;
+    ontology_base1:phone_number "415/956-9662" .
+
+PREFIX1:Restaurant96 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address96 ;
+    ontology_base1:name "boulevard" ;
+    ontology_base1:phone_number "415/543-6084" .
+
+PREFIX1:Restaurant97 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address97 ;
+    ontology_base1:name "cafe claude" ;
+    ontology_base1:phone_number "415/392-3505" .
+
+PREFIX1:Restaurant98 a ontology_base1:Restaurant ;
+    ontology_base1:category "american" ;
+    ontology_base1:has_address PREFIX1:Address98 ;
+    ontology_base1:name "campton place" ;
+    ontology_base1:phone_number "415/955-5555" .
+
+PREFIX1:Restaurant99 a ontology_base1:Restaurant ;
+    ontology_base1:category "french" ;
+    ontology_base1:has_address PREFIX1:Address99 ;
+    ontology_base1:name "chez michel" ;
+    ontology_base1:phone_number "415/775-7036" .
+
+PREFIX1:Address0 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City0 ;
+    ontology_base1:street "435 s. la cienega blv." .
+
+PREFIX1:Address1 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City1 ;
+    ontology_base1:street "12224 ventura blvd." .
+
+PREFIX1:Address10 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City10 ;
+    ontology_base1:street "1972 n. hillhurst ave." .
+
+PREFIX1:Address100 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City100 ;
+    ontology_base1:street "777 sutter st." .
+
+PREFIX1:Address101 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City101 ;
+    ontology_base1:street "570 4th st." .
+
+PREFIX1:Address102 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City102 ;
+    ontology_base1:street "22 hawthorne st." .
+
+PREFIX1:Address103 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City103 ;
+    ontology_base1:street "5937 geary blvd." .
+
+PREFIX1:Address104 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City104 ;
+    ontology_base1:street "2316 polk st." .
+
+PREFIX1:Address105 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City105 ;
+    ontology_base1:street "816 folsom st." .
+
+PREFIX1:Address106 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City106 ;
+    ontology_base1:street "648 bush st." .
+
+PREFIX1:Address107 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City107 ;
+    ontology_base1:street "1737 post st." .
+
+PREFIX1:Address108 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City108 ;
+    ontology_base1:street "3201 fillmore st." .
+
+PREFIX1:Address109 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City109 ;
+    ontology_base1:street "545 post st." .
+
+PREFIX1:Address11 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City11 ;
+    ontology_base1:street "903 n. la cienega blvd." .
+
+PREFIX1:Address110 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City110 ;
+    ontology_base1:street "600 stockton st." .
+
+PREFIX1:Address111 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City111 ;
+    ontology_base1:street "532 columbus ave." .
+
+PREFIX1:Address112 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City112 ;
+    ontology_base1:street "2930 beverly glen circle" .
+
+PREFIX1:Address12 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City12 ;
+    ontology_base1:street "8284 melrose ave." .
+
+PREFIX1:Address13 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City13 ;
+    ontology_base1:street "3rd st." .
+
+PREFIX1:Address14 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City14 ;
+    ontology_base1:street "129 n. la cienega blvd." .
+
+PREFIX1:Address15 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City15 ;
+    ontology_base1:street "9001 santa monica blvd." .
+
+PREFIX1:Address16 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City16 ;
+    ontology_base1:street "5955 melrose ave." .
+
+PREFIX1:Address17 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City17 ;
+    ontology_base1:street "1001 n. alameda st." .
+
+PREFIX1:Address18 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City18 ;
+    ontology_base1:street "12969 ventura blvd." .
+
+PREFIX1:Address19 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City19 ;
+    ontology_base1:street "617 s. olive st." .
+
+PREFIX1:Address2 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City2 ;
+    ontology_base1:street "701 stone canyon rd." .
+
+PREFIX1:Address20 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City20 ;
+    ontology_base1:street "1114 horn ave." .
+
+PREFIX1:Address21 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City21 ;
+    ontology_base1:street "3115 pico blvd." .
+
+PREFIX1:Address22 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City22 ;
+    ontology_base1:street "67 n. raymond ave." .
+
+PREFIX1:Address23 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City23 ;
+    ontology_base1:street "21 w. 52nd st." .
+
+PREFIX1:Address24 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City24 ;
+    ontology_base1:street "13 w. 54th st." .
+
+PREFIX1:Address25 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City25 ;
+    ontology_base1:street "34 e. 61st st." .
+
+PREFIX1:Address26 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City26 ;
+    ontology_base1:street "201 w. 83rd st." .
+
+PREFIX1:Address27 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City27 ;
+    ontology_base1:street "1 w. 67th st." .
+
+PREFIX1:Address28 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City28 ;
+    ontology_base1:street "2450 broadway  between 90th and 91st sts." .
+
+PREFIX1:Address29 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City29 ;
+    ontology_base1:street "854 7th ave.  between 54th and 55th sts." .
+
+PREFIX1:Address3 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City3 ;
+    ontology_base1:street "14016 ventura blvd." .
+
+PREFIX1:Address30 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City30 ;
+    ontology_base1:street "2 harrison st.  near hudson st." .
+
+PREFIX1:Address31 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City31 ;
+    ontology_base1:street "20 e. 76th st." .
+
+PREFIX1:Address32 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City32 ;
+    ontology_base1:street "210 e. 58th st." .
+
+PREFIX1:Address33 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City33 ;
+    ontology_base1:street "243 e. 58th st." .
+
+PREFIX1:Address34 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City34 ;
+    ontology_base1:street "99 e. 52nd st." .
+
+PREFIX1:Address35 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City35 ;
+    ontology_base1:street "12 e. 12th st." .
+
+PREFIX1:Address36 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City36 ;
+    ontology_base1:street "42 e. 20th st.  between park ave. s and broadway" .
+
+PREFIX1:Address37 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City37 ;
+    ontology_base1:street "402 w. 44th st." .
+
+PREFIX1:Address38 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City38 ;
+    ontology_base1:street "160 e. 64th st." .
+
+PREFIX1:Address39 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City39 ;
+    ontology_base1:street "33 w. 55th st." .
+
+PREFIX1:Address4 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City4 ;
+    ontology_base1:street "624 s. la brea ave." .
+
+PREFIX1:Address40 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City40 ;
+    ontology_base1:street "60 w. 55th st.  between 5th and 6th ave." .
+
+PREFIX1:Address41 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City41 ;
+    ontology_base1:street "155 w. 51st st." .
+
+PREFIX1:Address42 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City42 ;
+    ontology_base1:street "160 central park s" .
+
+PREFIX1:Address43 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City43 ;
+    ontology_base1:street "2 e. 55th st." .
+
+PREFIX1:Address44 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City44 ;
+    ontology_base1:street "249 e. 50th st." .
+
+PREFIX1:Address45 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City45 ;
+    ontology_base1:street "57 w. 58th st." .
+
+PREFIX1:Address46 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City46 ;
+    ontology_base1:street "405 e. 58th st." .
+
+PREFIX1:Address47 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City47 ;
+    ontology_base1:street "102 5th ave.  between 15th and 16th sts." .
+
+PREFIX1:Address48 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City48 ;
+    ontology_base1:street "57 jane st.  off hudson st." .
+
+PREFIX1:Address49 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City49 ;
+    ontology_base1:street "239 w. broadway  between walker and white sts." .
+
+PREFIX1:Address5 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City5 ;
+    ontology_base1:street "2709 main st." .
+
+PREFIX1:Address50 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City50 ;
+    ontology_base1:street "55 e. 54th st." .
+
+PREFIX1:Address51 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City51 ;
+    ontology_base1:street "100 e. 63rd st." .
+
+PREFIX1:Address52 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City52 ;
+    ontology_base1:street "182 w. 58th st." .
+
+PREFIX1:Address53 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City53 ;
+    ontology_base1:street "35 w. 64th st." .
+
+PREFIX1:Address54 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City54 ;
+    ontology_base1:street "95 ave. a at 6th st." .
+
+PREFIX1:Address55 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City55 ;
+    ontology_base1:street "30 rockefeller plaza" .
+
+PREFIX1:Address56 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City56 ;
+    ontology_base1:street "1 water st. at the east river" .
+
+PREFIX1:Address57 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City57 ;
+    ontology_base1:street "240 central park s" .
+
+PREFIX1:Address58 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City58 ;
+    ontology_base1:street "156 2nd ave. at 10th st." .
+
+PREFIX1:Address59 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City59 ;
+    ontology_base1:street "11 e. 53rd st." .
+
+PREFIX1:Address6 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City6 ;
+    ontology_base1:street "6703 melrose ave." .
+
+PREFIX1:Address60 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City60 ;
+    ontology_base1:street "43 w. 65th st." .
+
+PREFIX1:Address61 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City61 ;
+    ontology_base1:street "1110 3rd ave. at 65th st." .
+
+PREFIX1:Address62 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City62 ;
+    ontology_base1:street "201 e. 49th st." .
+
+PREFIX1:Address63 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City63 ;
+    ontology_base1:street "in central park at 67th st." .
+
+PREFIX1:Address64 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City64 ;
+    ontology_base1:street "747 9th ave.  between 50th and 51st sts." .
+
+PREFIX1:Address65 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City65 ;
+    ontology_base1:street "21 e. 16th st." .
+
+PREFIX1:Address66 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City66 ;
+    ontology_base1:street "152 w. 44th st." .
+
+PREFIX1:Address67 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City67 ;
+    ontology_base1:street "3200 las vegas blvd. s" .
+
+PREFIX1:Address68 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City68 ;
+    ontology_base1:street "3799 las vegas blvd. s" .
+
+PREFIX1:Address69 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City69 ;
+    ontology_base1:street "3000 w. paradise rd." .
+
+PREFIX1:Address7 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City7 ;
+    ontology_base1:street "8358 sunset blvd. west" .
+
+PREFIX1:Address70 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City70 ;
+    ontology_base1:street "3570 las vegas blvd. s" .
+
+PREFIX1:Address71 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City71 ;
+    ontology_base1:street "200 e. fremont st." .
+
+PREFIX1:Address72 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City72 ;
+    ontology_base1:street "2880 las vegas blvd. s" .
+
+PREFIX1:Address73 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City73 ;
+    ontology_base1:street "2245 e. flamingo rd." .
+
+PREFIX1:Address74 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City74 ;
+    ontology_base1:street "2355 peachtree rd.  peachtree battle shopping center" .
+
+PREFIX1:Address75 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City75 ;
+    ontology_base1:street "3125 piedmont rd.  near peachtree rd." .
+
+PREFIX1:Address76 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City76 ;
+    ontology_base1:street "3130 piedmont road" .
+
+PREFIX1:Address77 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City77 ;
+    ontology_base1:street "3393 peachtree rd.  lenox square mall  near neiman marcus" .
+
+PREFIX1:Address78 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City78 ;
+    ontology_base1:street "3073 piedmont road" .
+
+PREFIX1:Address79 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City79 ;
+    ontology_base1:street "1529 piedmont ave." .
+
+PREFIX1:Address8 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City8 ;
+    ontology_base1:street "23725 w. malibu rd." .
+
+PREFIX1:Address80 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City80 ;
+    ontology_base1:street "1 margaret mitchell sq." .
+
+PREFIX1:Address81 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City81 ;
+    ontology_base1:street "2290 peachtree rd.  peachtree square shopping center" .
+
+PREFIX1:Address82 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City82 ;
+    ontology_base1:street "490 e. paces ferry rd." .
+
+PREFIX1:Address83 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City83 ;
+    ontology_base1:street "595 piedmont ave.  rio shopping mall" .
+
+PREFIX1:Address84 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City84 ;
+    ontology_base1:street "1397 n. highland ave." .
+
+PREFIX1:Address85 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City85 ;
+    ontology_base1:street "2637 peachtree rd.  peachtree house condominium" .
+
+PREFIX1:Address86 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City86 ;
+    ontology_base1:street "224 ponce de leon ave." .
+
+PREFIX1:Address87 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City87 ;
+    ontology_base1:street "255 courtland st.  at harris st." .
+
+PREFIX1:Address88 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City88 ;
+    ontology_base1:street "1232 w. paces ferry rd." .
+
+PREFIX1:Address89 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City89 ;
+    ontology_base1:street "3434 peachtree rd." .
+
+PREFIX1:Address9 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City9 ;
+    ontology_base1:street "9560 dayton way" .
+
+PREFIX1:Address90 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City90 ;
+    ontology_base1:street "3434 peachtree rd." .
+
+PREFIX1:Address91 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City91 ;
+    ontology_base1:street "181 peachtree st." .
+
+PREFIX1:Address92 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City92 ;
+    ontology_base1:street "b peachtree rd." .
+
+PREFIX1:Address93 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City93 ;
+    ontology_base1:street "41 14th st." .
+
+PREFIX1:Address94 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City94 ;
+    ontology_base1:street "126 clement st." .
+
+PREFIX1:Address95 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City95 ;
+    ontology_base1:street "252 california st." .
+
+PREFIX1:Address96 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City96 ;
+    ontology_base1:street "1 mission st." .
+
+PREFIX1:Address97 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City97 ;
+    ontology_base1:street "7 claude la." .
+
+PREFIX1:Address98 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City98 ;
+    ontology_base1:street "340 stockton st." .
+
+PREFIX1:Address99 a ontology_base1:Address ;
+    ontology_base1:is_in_city PREFIX1:City99 ;
+    ontology_base1:street "804 northpoint" .
+
+PREFIX1:City0 a ontology_base1:City ;
+    ontology_base1:name "los angeles" .
+
+PREFIX1:City1 a ontology_base1:City ;
+    ontology_base1:name "studio city" .
+
+PREFIX1:City10 a ontology_base1:City ;
+    ontology_base1:name "los angeles" .
+
+PREFIX1:City100 a ontology_base1:City ;
+    ontology_base1:name "san francisco" .
+
+PREFIX1:City101 a ontology_base1:City ;
+    ontology_base1:name "san francisco" .
+
+PREFIX1:City102 a ontology_base1:City ;
+    ontology_base1:name "san francisco" .
+
+PREFIX1:City103 a ontology_base1:City ;
+    ontology_base1:name "san francisco" .
+
+PREFIX1:City104 a ontology_base1:City ;
+    ontology_base1:name "san francisco" .
+
+PREFIX1:City105 a ontology_base1:City ;
+    ontology_base1:name "san francisco" .
+
+PREFIX1:City106 a ontology_base1:City ;
+    ontology_base1:name "san francisco" .
+
+PREFIX1:City107 a ontology_base1:City ;
+    ontology_base1:name "san francisco" .
+
+PREFIX1:City108 a ontology_base1:City ;
+    ontology_base1:name "san francisco" .
+
+PREFIX1:City109 a ontology_base1:City ;
+    ontology_base1:name "san francisco" .
+
+PREFIX1:City11 a ontology_base1:City ;
+    ontology_base1:name "los angeles" .
+
+PREFIX1:City110 a ontology_base1:City ;
+    ontology_base1:name "san francisco" .
+
+PREFIX1:City111 a ontology_base1:City ;
+    ontology_base1:name "san francisco" .
+
+PREFIX1:City112 a ontology_base1:City ;
+    ontology_base1:name "los angeles" .
+
+PREFIX1:City12 a ontology_base1:City ;
+    ontology_base1:name "los angeles" .
+
+PREFIX1:City13 a ontology_base1:City ;
+    ontology_base1:name "los angeles" .
+
+PREFIX1:City14 a ontology_base1:City ;
+    ontology_base1:name "beverly hills" .
+
+PREFIX1:City15 a ontology_base1:City ;
+    ontology_base1:name "los angeles" .
+
+PREFIX1:City16 a ontology_base1:City ;
+    ontology_base1:name "los angeles" .
+
+PREFIX1:City17 a ontology_base1:City ;
+    ontology_base1:name "los angeles" .
+
+PREFIX1:City18 a ontology_base1:City ;
+    ontology_base1:name "los angeles" .
+
+PREFIX1:City19 a ontology_base1:City ;
+    ontology_base1:name "los angeles" .
+
+PREFIX1:City2 a ontology_base1:City ;
+    ontology_base1:name "bel air" .
+
+PREFIX1:City20 a ontology_base1:City ;
+    ontology_base1:name "los angeles" .
+
+PREFIX1:City21 a ontology_base1:City ;
+    ontology_base1:name "santa monica" .
+
+PREFIX1:City22 a ontology_base1:City ;
+    ontology_base1:name "los angeles" .
+
+PREFIX1:City23 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City24 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City25 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City26 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City27 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City28 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City29 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City3 a ontology_base1:City ;
+    ontology_base1:name "sherman oaks" .
+
+PREFIX1:City30 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City31 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City32 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City33 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City34 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City35 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City36 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City37 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City38 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City39 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City4 a ontology_base1:City ;
+    ontology_base1:name "los angeles" .
+
+PREFIX1:City40 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City41 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City42 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City43 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City44 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City45 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City46 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City47 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City48 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City49 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City5 a ontology_base1:City ;
+    ontology_base1:name "santa monica" .
+
+PREFIX1:City50 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City51 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City52 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City53 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City54 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City55 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City56 a ontology_base1:City ;
+    ontology_base1:name "brooklyn" .
+
+PREFIX1:City57 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City58 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City59 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City6 a ontology_base1:City ;
+    ontology_base1:name "los angeles" .
+
+PREFIX1:City60 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City61 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City62 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City63 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City64 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City65 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City66 a ontology_base1:City ;
+    ontology_base1:name "new york" .
+
+PREFIX1:City67 a ontology_base1:City ;
+    ontology_base1:name "las vegas" .
+
+PREFIX1:City68 a ontology_base1:City ;
+    ontology_base1:name "las vegas" .
+
+PREFIX1:City69 a ontology_base1:City ;
+    ontology_base1:name "las vegas" .
+
+PREFIX1:City7 a ontology_base1:City ;
+    ontology_base1:name "hollywood" .
+
+PREFIX1:City70 a ontology_base1:City ;
+    ontology_base1:name "las vegas" .
+
+PREFIX1:City71 a ontology_base1:City ;
+    ontology_base1:name "las vegas" .
+
+PREFIX1:City72 a ontology_base1:City ;
+    ontology_base1:name "las vegas" .
+
+PREFIX1:City73 a ontology_base1:City ;
+    ontology_base1:name "las vegas" .
+
+PREFIX1:City74 a ontology_base1:City ;
+    ontology_base1:name "atlanta" .
+
+PREFIX1:City75 a ontology_base1:City ;
+    ontology_base1:name "atlanta" .
+
+PREFIX1:City76 a ontology_base1:City ;
+    ontology_base1:name "atlanta" .
+
+PREFIX1:City77 a ontology_base1:City ;
+    ontology_base1:name "atlanta" .
+
+PREFIX1:City78 a ontology_base1:City ;
+    ontology_base1:name "atlanta" .
+
+PREFIX1:City79 a ontology_base1:City ;
+    ontology_base1:name "atlanta" .
+
+PREFIX1:City8 a ontology_base1:City ;
+    ontology_base1:name "malibu" .
+
+PREFIX1:City80 a ontology_base1:City ;
+    ontology_base1:name "atlanta" .
+
+PREFIX1:City81 a ontology_base1:City ;
+    ontology_base1:name "atlanta" .
+
+PREFIX1:City82 a ontology_base1:City ;
+    ontology_base1:name "atlanta" .
+
+PREFIX1:City83 a ontology_base1:City ;
+    ontology_base1:name "atlanta" .
+
+PREFIX1:City84 a ontology_base1:City ;
+    ontology_base1:name "atlanta" .
+
+PREFIX1:City85 a ontology_base1:City ;
+    ontology_base1:name "atlanta" .
+
+PREFIX1:City86 a ontology_base1:City ;
+    ontology_base1:name "atlanta" .
+
+PREFIX1:City87 a ontology_base1:City ;
+    ontology_base1:name "atlanta" .
+
+PREFIX1:City88 a ontology_base1:City ;
+    ontology_base1:name "atlanta" .
+
+PREFIX1:City89 a ontology_base1:City ;
+    ontology_base1:name "atlanta" .
+
+PREFIX1:City9 a ontology_base1:City ;
+    ontology_base1:name "los angeles" .
+
+PREFIX1:City90 a ontology_base1:City ;
+    ontology_base1:name "atlanta" .
+
+PREFIX1:City91 a ontology_base1:City ;
+    ontology_base1:name "atlanta" .
+
+PREFIX1:City92 a ontology_base1:City ;
+    ontology_base1:name "atlanta" .
+
+PREFIX1:City93 a ontology_base1:City ;
+    ontology_base1:name "atlanta" .
+
+PREFIX1:City94 a ontology_base1:City ;
+    ontology_base1:name "san francisco" .
+
+PREFIX1:City95 a ontology_base1:City ;
+    ontology_base1:name "san francisco" .
+
+PREFIX1:City96 a ontology_base1:City ;
+    ontology_base1:name "san francisco" .
+
+PREFIX1:City97 a ontology_base1:City ;
+    ontology_base1:name "san francisco" .
+
+PREFIX1:City98 a ontology_base1:City ;
+    ontology_base1:name "san francisco" .
+
+PREFIX1:City99 a ontology_base1:City ;
+    ontology_base1:name "san francisco" .
+
