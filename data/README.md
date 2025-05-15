@@ -1,0 +1,1 @@
+Due to space limitations, the other datasets used in the paper can be downloaded directly from the following links: [OpenEA](https://github.com/nju-websoft/OpenEA), [DBP15K](https://github.com/nju-websoft/JAPE), [OAEI KG Track](https://oaei.ontologymatching.org/2024/knowledgegraph/index.html).
