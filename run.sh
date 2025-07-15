@@ -1,8 +1,17 @@
-printf '==========Running==========\n'
-python main.py --kb1 data/D_W_15K_V1/dbp_15K_V1.ttl --kb2 data/D_W_15K_V1/wd_15K_V1.ttl --save_file dw-v1.ttl --alpha 3.0 --init 0.7 
-python main.py --kb1 data/D_W_15K_V2/dbp_15K_V2.ttl --kb2 data/D_W_15K_V2/wd_15K_V2.ttl --save_file dw-v2.ttl --alpha 3.0 --init 0.7
-python main.py --kb1 data/DBP15k/fr_en/dbp-fr.ttl --kb2 data/DBP15k/fr_en/dbp-en.ttl --save_file dbp-fr-en.ttl --alpha 3.0 --init 0.7
-python main.py --kb1 data/DBP15k/zh_en/dbp-zh.ttl --kb2 data/DBP15k/zh_en/dbp-en.ttl --save_file dbp-zh-en.ttl --alpha 3.0 --init 0.7
-python main.py --kb1 data/DBP15k/ja_en/dbp-ja.ttl --kb2 data/DBP15k/ja_en/dbp-en.ttl --save_file dbp-ja-en.ttl --alpha 3.0 --init 0.7
-python main.py --kb1 data/oaei/memoryalpha-stexpanded/source.ttl --kb2 data/oaei/memoryalpha-stexpanded/target.ttl --alpha 2.0 --init 0.7
-python main.py --kb1 data/oaei/starwars-swtor/source.ttl --kb2 data/oaei/starwars-swtor/target.ttl --alpha 2.0 --init 0.7
+printf '==========Running FLORA==========\n'
+
+printf '==========Running Mini Test==========\n'
+python main.py --dataset data/small-test/mini/ --save_file mini-test.ttl --alpha 3.0 --init 0.7
+python main.py --dataset data/small-test/restaurant/ --save_file small-test-restaurant.ttl --alpha 3.0 --init 0.7
+python main.py --dataset data/small-test/person/ --save_file small-test-person.ttl --alpha 3.0 --init 0.7
+
+printf '==========Running Entity Alignment==========\n'
+python main.py --dataset data/OpenEA/D_W_15K_V1/ --save_file dw-v1.ttl --alpha 3.0 --init 0.7
+python main.py --dataset data/OpenEA/D_W_15K_V2/ --save_file dw-v2.ttl --alpha 3.0 --init 0.7
+python main.py --dataset data/DBP15k/fr_en/ --save_file dbp-fr-en.ttl --alpha 3.0 --init 0.7
+python main.py --dataset data/DBP15k/zh_en/ --save_file dbp-zh-en.ttl --alpha 3.0 --init 0.7
+python main.py --dataset data/DBP15k/ja_en/ --save_file dbp-ja-en.ttl --alpha 3.0 --init 0.7
+
+printf '==========Running KG Alignment on OAEI datasets==========\n'
+python main.py --dataset data/oaei/memoryalpha-stexpanded/ --save_file memoryalpha-stexpanded.ttl --alpha 2.0 --init 0.7
+python main.py --dataset data/oaei/starwars-swtor/ --save_file starwars-swtor.ttl --alpha 2.0 --init 0.7

@@ -52,4 +52,4 @@ def set_logger(args):
     console.setLevel(logging.DEBUG)
     formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s')
     console.setFormatter(formatter)
-    logging.getLogger('').addHandler(console)
+    # logging.getLogger('').addHandler(console)

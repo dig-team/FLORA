@@ -7,17 +7,26 @@ import scipy.stats as st
 import xml.etree.ElementTree as ET
 
 
+# def load_openea_ref(loc):
+#     df_ref = pd.read_csv(os.path.join(loc, 'ent_links'), sep='\t', header=None)
+#     df_ref['dbp'] = df_ref[0].apply(lambda x: 'dbr:'+ unicode(x.replace('http://dbpedia.org/resource/', '')))
+#     df_ref['wd'] = df_ref[1].apply(lambda x: x.replace('http://www.wikidata.org/entity/', 'wd:'))
+#     y_gold = set(df_ref.apply(lambda x: (x['dbp'], x['wd']), axis=1))
+#     return y_gold
+
 def load_openea_ref(loc):
-    df_ref = pd.read_csv(os.path.join(loc, 'ent_links'), sep='\t', header=None)
-    df_ref['dbp'] = df_ref[0].apply(lambda x: 'dbr:'+ unicode(x.replace('http://dbpedia.org/resource/', '')))
-    df_ref['wd'] = df_ref[1].apply(lambda x: x.replace('http://www.wikidata.org/entity/', 'wd:'))
-    y_gold = set(df_ref.apply(lambda x: (x['dbp'], x['wd']), axis=1))
-    return y_gold
+    gt_pairs = []
+    with open(os.path.join(loc, 'ent_links'), 'r', encoding='UTF-8') as f:
+        for line in f:
+            head, tail = line.strip().split('\t')
+            gt_pairs.append((head, tail))
+    return gt_pairs
 
 def openea_eval(maxAssignment, y_gold):
     y_pred = set()
     for e1 in maxAssignment:
-        if e1.startswith('dbr:'):
+        # if e1.startswith('dbr:'):
+        if e1.startswith('http://dbpedia.org/resource/'):
             for e2 in maxAssignment[e1]:
                 y_pred.add(tuple([e1, e2]))
                 break # only select the first one

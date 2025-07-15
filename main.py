@@ -26,14 +26,16 @@ OBJ=2
 
 def get_params():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--kb1', type=str, default='kb1.ttl')
-    parser.add_argument('--kb2', type=str, default='kb2.ttl')
+    # parser.add_argument('--kb1', type=str, default='kb1.ttl')
+    # parser.add_argument('--kb2', type=str, default='kb2.ttl')
+    parser.add_argument('--dataset', type=str, default='data/OpenEA/D_W_15K_V2/')
     parser.add_argument('--save_dir', type=str, default='save')
     parser.add_argument('--save_file', type=str, default='results.ttl')
     parser.add_argument('--trainingdata', type=str, default=None)
     parser.add_argument('--alpha', type=float, default=3.0)
     parser.add_argument('--init', type=float, default=0.7)
     parser.add_argument('--gramN', type=int, default=100)
+    parser.add_argument('--epsilon', type=float, default=0.1)
     args, _ = parser.parse_known_args()
     params_ = vars(args)
     return params_
@@ -45,13 +47,24 @@ params = get_params()
 Announce.set_logger(params)
 
 # Load knowledge bases
-Announce.doing("Loading first KB")
-kb1=TurtleUtils.graphFromTurtleFile(params['kb1'])
-kb1predicates=kb1.predicates()
-Announce.done()
-Announce.doing("Loading second KB")
-kb2=TurtleUtils.graphFromTurtleFile(params['kb2'])
-kb2predicates=kb2.predicates()
+Announce.doing("Loading Knowledge Bases")
+# kb1=TurtleUtils.graphFromTurtleFile(params['kb1'])
+# kb1predicates=kb1.predicates()
+# Announce.done()
+# Announce.doing("Loading second KB")
+# kb2=TurtleUtils.graphFromTurtleFile(params['kb2'])
+# kb2predicates=kb2.predicates()
+if 'OpenEA' in params['dataset']:
+    kb1, kb2, _ = TurtleUtils.load_openea(params['dataset'], attr=True)
+elif 'DBP15k' in params['dataset']:
+    kb1, kb2 = TurtleUtils.load_dbp15k(params['dataset'], attr=True, name=True)
+elif 'OAEI' in params['dataset']:
+    kb1, kb2 = TurtleUtils.load_oaei(params['dataset'], format='ttl')
+elif 'small-test' in params['dataset']:
+    kb1 = TurtleUtils.graphFromTurtleFile(os.path.join(params['dataset'], params['dataset'].split('/')[-2]+'1.ttl'))
+    kb2 = TurtleUtils.graphFromTurtleFile(os.path.join(params['dataset'], params['dataset'].split('/')[-2]+'2.ttl'))
+else: 
+    raise ValueError("Unknown dataset: %s" % params['dataset'])
 Announce.done()
 
 # Load training data (if any)
@@ -116,7 +129,7 @@ def computeFunctionalities(kb, gram=[]):
     """ Returns the functionalities of the predicates in the KB """
     predicate2numFacts={}
     predicate2subjects={}
-    for subject in tqdm(kb.subjects(), desc="Computing functionalities"):
+    for subject in kb.subjects():
         # print(subject)
         facts = list(kb.triplesWithSubject(subject))
         for n in gram:
@@ -191,7 +204,7 @@ def computeFunctionalitiesForPredicates(kb, predicates):
 #################################################################
 
 
-Announce.doing("Initializing attribute subsumption")
+Announce.doing("Initializing Subrelations")
 predicates1 = kb1.predicates()
 predicates2 = kb2.predicates()
 predicate2superPredicate=initializePredicateSubsumption(predicates1, predicates2, relinit=0.1)
@@ -211,16 +224,16 @@ for pred in functionalities2:
 Announce.done()
 
 Announce.doing("Computing literal scores with threshold", params['init'])
-path_emb1 = os.path.join('data/emb/', params['kb1'].split('/')[-2], 'kb1.pkl')
-path_emb2 = os.path.join('data/emb/', params['kb1'].split('/')[-2], 'kb2.pkl')
-if not os.path.exists(path_emb1):
-    raise FileNotFoundError(f"Path {path_emb1} does not exist.")
-if not os.path.exists(path_emb2):
-    raise FileNotFoundError(f"Path {path_emb2} does not exist.")
-logging.info("path_emb1: %s", path_emb1)
-logging.info("path_emb2: %s", path_emb2)
-mapScores = init.mapLiterals(kb1, kb2, path_emb1, path_emb2, params['init'])
-init.initLiteralMapScores(mapScores, sameAsScores, kb1, kb2)
+path_emb = os.path.join('data/emb/', params['dataset'].split('/')[-2])
+# path_emb1 = os.path.join('data/emb/', params['dataset'].split('/')[-1], 'kb1.pkl')
+# path_emb2 = os.path.join('data/emb/', params['dataset'].split('/')[-1], 'kb2.pkl')
+# if not os.path.exists(os.path.join(path_emb, 'kb1.pkl')) or not os.path.exists(os.path.join(path_emb, 'kb2.pkl')):
+#      FileNotFoundError(f"Embedding File does not exist in {path_emb}.")
+print("\n       path_emb1:", os.path.join(path_emb, 'kb1.pkl'))
+print("       path_emb2:", os.path.join(path_emb, 'kb2.pkl'))
+init.mapLiterals(kb1, kb2, path_emb, sameAsScores, params['init'])
+# init.initLiteralMapScores(mapScores, sameAsScores, kb1, kb2)
+Announce.done()
 
 
 #################################################################
@@ -738,7 +751,7 @@ while True:
     
     Announce.done() # Iteration
     iterations+=1
-    if iterations>MAXITERATIONS or abs(newSameAsSum - sameAsSum) < 0.1:
+    if iterations>MAXITERATIONS or abs(newSameAsSum - sameAsSum) < params['epsilon']:
         break
 
 

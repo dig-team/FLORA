@@ -1,4 +1,5 @@
 import re
+import os
 import TurtleUtils
 from tqdm import tqdm
 import math
@@ -31,7 +32,14 @@ def unicode(txt):
 
 def decode_unicode(encoded_str):
     decoded_string = re.sub(r'_u([0-9A-F]{4})_', lambda x: chr(int(x.group(1), 16)), encoded_str)
-    return decoded_string
+    if '\\u' in decoded_string:
+        try:
+            s = decoded_string.encode('utf-8').decode('unicode_escape')
+            return s.encode('utf-16', 'surrogatepass').decode('utf-16')
+        except Exception:
+            return decoded_string
+    else:
+        return decoded_string
 
 
 def splitLiteral(term):
@@ -197,7 +205,7 @@ def compareLiterals(sameAsScores, bucket1, bucket2, datatype=None):
                         sameAsScores[object1][object2] = 1.0
 
 
-def mapLiterals(kb1, kb2, path_emb1, path_emb2, threshold=0.5):
+def mapLiterals(kb1, kb2, path_emb, sameAsScore, threshold=0.5):
     mapScores = {}
     quantityBucket1, digitBucket1, strBucket1, dateBucket1 = getLiteralBuckets(kb1)
     quantityBucket2, digitBucket2, strBucket2, dateBucket2 = getLiteralBuckets(kb2)
@@ -218,50 +226,64 @@ def mapLiterals(kb1, kb2, path_emb1, path_emb2, threshold=0.5):
                 if object1 not in mapScores:
                     mapScores[object1]={}
                 for object2 in strBucket2[key1]:
-                    mapScores[object1][object2] = 1.0
-    literal2id_kb1, embedding_matrix_kb1 = load_emb(path_emb1)
-    literal2id_kb2, embedding_matrix_kb2 = load_emb(path_emb2)
-    id2literal_kb2 = {v: k for k, v in literal2id_kb2.items()}
-    id2literal_kb1 = {v: k for k, v in literal2id_kb1.items()}
-    similarity_mat = embedding_matrix_kb1 @ embedding_matrix_kb2.T
-    # print("Start calculating similarity matrix...")
-    for key1 in strBucket1:
-        if key1 in strBucket2 and len(key1.strip('"')) > 0: 
-            continue
-        if key1 in literal2id_kb1:
-            max_indexs = similarity_mat[literal2id_kb1[key1], :].argsort()[::-1]
-            for max_index in max_indexs[:1]:
-                # recheck max score for strings
-                if id2literal_kb2[max_index] not in strBucket2:
-                    continue
-                if similarity_mat[literal2id_kb1[key1], max_index] < threshold:
-                    continue
-                for object1 in strBucket1[key1]:
-                    if object1 in mapScores and \
-                        round(max(mapScores.get(object1, {None:0}).values()), 2) >= 1.0:
+                    mapScores[object1][object2] = 1.0 # exact match
+
+    if os.path.exists(os.path.join(path_emb, 'kb1.pkl')) and os.path.exists(os.path.join(path_emb, 'kb2.pkl')):
+        literal2id_kb1, embedding_matrix_kb1 = load_emb(os.path.join(path_emb, 'kb1.pkl'))
+        literal2id_kb2, embedding_matrix_kb2 = load_emb(os.path.join(path_emb, 'kb2.pkl'))
+        id2literal_kb2 = {v: k for k, v in literal2id_kb2.items()}
+        # id2literal_kb1 = {v: k for k, v in literal2id_kb1.items()}
+        similarity_mat = embedding_matrix_kb1 @ embedding_matrix_kb2.T
+        # print("Start calculating similarity matrix...")
+        for key1 in strBucket1:
+            if key1 in strBucket2 and len(key1.strip('"')) > 0: 
+                continue
+            if key1 in literal2id_kb1:
+                max_indexs = similarity_mat[literal2id_kb1[key1], :].argsort()[::-1]
+                for max_index in max_indexs[:1]:
+                    # recheck max score for strings
+                    if id2literal_kb2[max_index] not in strBucket2:
                         continue
-                    if object1 not in mapScores:
-                        mapScores[object1]={}
-                    for object2 in strBucket2[id2literal_kb2[max_index]]:
-                        # mapScores[object1][object2] = max_score
-                        mapScores[object1][object2] = similarity_mat[literal2id_kb1[key1], max_index]    
-    return mapScores
-
-
-def initLiteralMapScores(mapScores, sameAsScore, kb1, kb2):
-    '''
-    mapScores: dict -> input dict before processing
-    sameAsScore: dict -> output dict after processing
-    '''
-    # one-to-one literal mapping constraints (when multiple have max scores, keep them all.)
+                    if similarity_mat[literal2id_kb1[key1], max_index] < threshold:
+                        continue
+                    for object1 in strBucket1[key1]:
+                        if object1 in mapScores and \
+                            round(max(mapScores.get(object1, {None:0}).values()), 2) >= 1.0:
+                            continue
+                        if object1 not in mapScores:
+                            mapScores[object1]={}
+                        for object2 in strBucket2[id2literal_kb2[max_index]]:
+                            # mapScores[object1][object2] = max_score
+                            mapScores[object1][object2] = similarity_mat[literal2id_kb1[key1], max_index] 
+    else: # no embeddings files available
+        print("   Warning: No valid embedding files for literals, Using exact match only.")
+    
+    # Load to sameAsScore
     for literal1 in mapScores:
         if literal1 not in kb1.index:
-            continue
-        if literal1.startswith('"tt'):
             continue
         # check empty mapping
         if literal1 not in sameAsScore:
             sameAsScore[literal1] = mapScores[literal1].copy()
+
+
+    # return mapScores
+
+
+# def initLiteralMapScores(mapScores, sameAsScore, kb1, kb2):
+#     '''
+#     mapScores: dict -> input dict before processing
+#     sameAsScore: dict -> output dict after processing
+#     '''
+#     # one-to-one literal mapping constraints (when multiple have max scores, keep them all.)
+#     for literal1 in mapScores:
+#         if literal1 not in kb1.index:
+#             continue
+#         if literal1.startswith('"tt'):
+#             continue
+#         # check empty mapping
+#         if literal1 not in sameAsScore:
+#             sameAsScore[literal1] = mapScores[literal1].copy()
 
 
 def jaccard_similarity(str1, str2):

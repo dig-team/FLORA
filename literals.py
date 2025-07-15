@@ -14,10 +14,11 @@ import TurtleUtils
 Str_tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/LaBSE')
 Str_model = AutoModel.from_pretrained('sentence-transformers/LaBSE')
 # Monolingual BERT
+# Str_tokenizer = AutoTokenizer.from_pretrained('Lihuchen/pearl_small')
+# Str_model = AutoModel.from_pretrained('Lihuchen/pearl_small')
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 Str_model.to(device) # gpu
 print("Pretrained Models loaded successfully...")
-
 
 
 def average_pool(last_hidden_states: Tensor,
@@ -81,7 +82,14 @@ def unicode(txt):
 
 def decode_unicode(encoded_str):
     decoded_string = re.sub(r'_u([0-9A-F]{4})_', lambda x: chr(int(x.group(1), 16)), encoded_str)
-    return decoded_string
+    if '\\u' in decoded_string:
+        try:
+            s = decoded_string.encode('utf-8').decode('unicode_escape')
+            return s.encode('utf-16', 'surrogatepass').decode('utf-16')
+        except Exception:
+            return decoded_string
+    else:
+        return decoded_string
 
 
 def splitLiteral(term):
@@ -135,7 +143,10 @@ def embedding_strings(kb, batch_size=64):
         if isLiteral(object):
             term, _, _, type = splitLiteral(object)
             if len(term) <= 1:
-                print("Empty literal: ", term, object)
+                print("Empty/Short literal: ", term, object)
+                continue
+            if not is_readable(term) and type == 'xsd:string':
+                print("Unreadable literal: ", term, object)
                 continue
             if type == 'xsd:string' and is_readable(term):
                 if term in literal2id:
@@ -179,22 +190,26 @@ def jaccard_similarity(str1, str2):
     union = len(s1 | s2)
     return intersection / union
 
+
+
 if __name__ == '__main__':
 
-    if len(sys.argv)<3:
-        print("python literals.py <kb1.ttl> <kb2.ttl> <emb_path>")
+    if len(sys.argv)<2:
+        print("python literals.py <dataset path> <emb_path>")
         exit()
 
+    # print("Loading first KB...")
+    # kb1=TurtleUtils.graphFromTurtleFile(sys.argv[1])
+    # kb1predicates=kb1.predicates()
 
-    print("Loading first KB...")
-    kb1=TurtleUtils.graphFromTurtleFile(sys.argv[1])
-    kb1predicates=kb1.predicates()
+    # print("Loading second KB...")
+    # kb2=TurtleUtils.graphFromTurtleFile(sys.argv[2])
+    # kb2predicates=kb2.predicates()
 
-    print("Loading second KB...")
-    kb2=TurtleUtils.graphFromTurtleFile(sys.argv[2])
-    kb2predicates=kb2.predicates()
+    # kb1, kb2, gt = TurtleUtils.load_openea('/home/infres/ypeng-21/work/OM/Paris2/github/Paris2/camera-ready/FLORA/data/D_W_15K_V2')
+    kb1, kb2 = TurtleUtils.load_dbp15k(sys.argv[1], attr=True, name=True)
 
-    emb_path = sys.argv[3]
+    emb_path = sys.argv[2]
     batch_size = 128
     kb1_emb = embedding_strings(kb1, batch_size)
     kb2_emb = embedding_strings(kb2, batch_size)

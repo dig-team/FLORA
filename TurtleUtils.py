@@ -1,3 +1,9 @@
+"""
+Reading files of different formats: Turtle, Graph, XML.
+
+Portions of this code are adapted from Fabian M. Suchanek (2022) under CC-BY.
+"""
+
 import gzip
 import os
 import codecs
@@ -7,6 +13,7 @@ from io import StringIO
 # import Prefixes
 from collections import defaultdict
 from functools import reduce
+from tqdm import tqdm
 
 ##########################################################################
 #             Parsing Turtle
@@ -512,3 +519,156 @@ intRegex=re.compile('^"?[+-]?[0-9.]+"?$')
 def isLiteral(term):
     return re.match(literalRegex,term) or re.match(intRegex,term)
 
+
+##########################################################################
+#                 Useful functions
+##########################################################################
+
+
+def load_openea(loc, attr=True):
+    """ Loads OpenEA datasets """
+    gt_pairs = []
+    with open(os.path.join(loc, 'ent_links'), 'r', encoding='UTF-8') as f:
+            for line in f:
+                head, tail = line.strip().split('\t')
+                gt_pairs.append((head, tail))
+
+    kg1, kg2=Graph(), Graph()
+    for i in tqdm(range(2), desc='   Loading OpenEA {name}...'.format(name=loc.split('/')[-2])):
+         with open(os.path.join(loc,'rel_triples_{}'.format(i+1)), 'r', encoding='UTF-8') as f:
+                for line in f.readlines():
+                    head, rel, tail = line.strip().split('\t')
+                    if i == 0:
+                        kg1.add((head, rel, tail))
+                    else:
+                        kg2.add((head, rel, tail))
+    if attr: # load attributes as well 
+         for i in range(2):
+             with open(os.path.join(loc,'attr_triples_{}'.format(i+1)), 'r', encoding='UTF-8') as f:
+                 for line in f.readlines():
+                     head, attribute, literal = line.strip().split('\t')
+                     # process literals
+                     if literal.startswith('"'):
+                        # Datatypes
+                        literal = literal.replace('\n','\\n').replace('\t','\\t').replace('\r','').replace('\\"',"'").replace("\\u0022","'")
+                        if '^^' in literal:
+                            str_value, datatype = literal.split('^^')
+                            prefixed_datatype = re.sub(r'<http://www\.w3\.org/2001/XMLSchema#([a-zA-Z0-9_-]+)>', r'xsd:\1', datatype)
+                            literal = '"'+str_value[1:-1]+'"^^'+prefixed_datatype
+                            if i == 0:
+                                kg1.add((head, attribute, literal))
+                            else:
+                                kg2.add((head, attribute, literal))
+                            continue
+                        # other situation
+                        if i == 0:
+                            kg1.add((head, attribute, literal))
+                        else:
+                            kg2.add((head, attribute, literal))
+                     else:
+                        # Make all literals simple literals without line breaks and quotes
+                        literal = literal.replace('\n','\\n').replace('\t','\\t').replace('\r','').replace('\\"',"'").replace("\\u0022","'")
+                        if i == 0:
+                            kg1.add((head, attribute, '"'+literal+'"'))
+                        else:
+                            kg2.add((head, attribute, '"'+literal+'"'))
+    return kg1, kg2, gt_pairs
+
+
+def load_dbp15k(loc, trans=False, attr=True, name=True):
+    """ Loads DBP15K datasets """
+    kg1, kg2 = Graph(), Graph()
+    # id2ent1, id2ent2 = {}, {} # for seed pairs if needed
+    for i in tqdm(range(2), desc='   Loading DBP15K {name}...'.format(name=loc.split('/')[-2])):
+        id2rel, id2ent = {}, {}
+        with open(os.path.join(loc, 'rel_ids_{}'.format(i+1)), encoding='UTF-8') as f:
+            for line in f.readlines():
+                ids, rel = line.strip().split('\t')
+                id2rel[int(ids)] = rel
+
+        with open(os.path.join(loc, 'ent_ids_{}'.format(i+1)), encoding='UTF-8') as f:
+            if i==0: # kb1
+                if trans == True:
+                    ent_name_trans = {}
+                    with open(os.path.join(loc, 'translated_google.txt'), encoding='UTF-8') as f2:
+                        for line1, line2 in zip(f.readlines(), f2.readlines()):
+                            ids, ent = line1.strip().split('\t')
+                            ent_trans = line2.strip()
+                            id2ent[int(ids)] = ent
+                            ent_trans = ent_trans.replace('\n','\\n').replace('\t','\\t').replace('\r','').replace('\\"',"'").replace("\\u0022","'")
+                            ent_name_trans[ent] = ent_trans
+                            if name: # add entity name as an attribute triple
+                                kg1.add((ent, 'EA:label', '"'+ent_trans+'"'))
+                else: # no translation
+                    for line in f.readlines():
+                        ids, ent = line.strip().split('\t')
+                        ent_name = ent.split('/')[-1].replace('_', ' ')
+                        ent_name = ent_name.replace('\n','\\n').replace('\t','\\t').replace('\r','').replace('\\"',"'").replace("\\u0022","'")
+                        id2ent[int(ids)] = ent
+                        if name: # add entity name as an attribute triple
+                            kg1.add((ent, 'EA:label', '"'+ent_name+'"'))
+            else: # kb2
+                for line in f.readlines():
+                    ids, ent = line.strip().split('\t')
+                    ent_name = ent.split('/')[-1].replace('_', ' ')
+                    ent_name = ent_name.replace('\n','\\n').replace('\t','\\t').replace('\r','').replace('\\"',"'").replace("\\u0022","'")
+                    id2ent[int(ids)] = ent
+                    if name: # add entity name as an attribute triple
+                        kg2.add((ent, 'EA:label', '"'+ent_name+'"'))
+
+        with open(os.path.join(loc, 'triples_{}'.format(i+1)), encoding='UTF-8') as f:
+            for line in f.readlines():
+                head, rel, tail = line.strip().split('\t')
+                head, rel, tail = int(head), int(rel), int(tail)
+                # will add bi-directional edges automatically
+                if i==0:
+                    kg1.add((id2ent[head], id2rel[rel], id2ent[tail]))
+                else:
+                    kg2.add((id2ent[head], id2rel[rel], id2ent[tail]))
+        
+        # load attributes
+        if attr:
+            for triple in triplesFromTurtleFile(os.path.join(loc, 'att_triples_{}'.format(i+1))):
+                head, attribute, literal = triple
+                literal = literal.replace('\n','\\n').replace('\t','\\t').replace('\r','').replace('\\"',"'").replace("\\u0022","'")
+                # Preprocess literals
+                if literal.startswith('"'):
+                    # Datatypes
+                    if '^^' in literal:
+                        str_value, datatype = literal.split('^^')
+                        prefixed_datatype = re.sub(r'<http://www\.w3\.org/2001/XMLSchema#([a-zA-Z0-9_-]+)>', r'xsd:\1', datatype)
+                        literal = '"'+str_value[1:-1]+'"^^'+prefixed_datatype
+                        if i == 0:
+                            kg1.add((head[1:-1], attribute[1:-1], literal))
+                        else:
+                            kg2.add((head[1:-1], attribute[1:-1], literal))
+                        continue
+                    # other situation (not '^^')
+                    if i == 0:
+                        kg1.add((head[1:-1], attribute[1:-1], literal))
+                    else:
+                        kg2.add((head[1:-1], attribute[1:-1], literal))
+                else: # literal values lack ""
+                    if i == 0:
+                        kg1.add((head[1:-1], attribute[1:-1], '"'+literal+'"'))
+                    else:
+                        kg2.add((head[1:-1], attribute[1:-1], '"'+literal+'"'))
+    return kg1, kg2
+
+
+def load_oaei(loc, format='ttl'):
+    """ Loads OAEI datasets """
+    if format not in ['ttl', 'xml']:
+        raise ValueError("Unsupported format. Please use 'ttl' or 'xml'.")
+    if format != 'ttl':
+        # For original XML files, we need to convert them to Turtle first
+        from rdflib import Graph as RDFGraph
+        g = RDFGraph()
+        g.parse(os.path.join(loc, 'source.xml'), format='xml')
+        g.serialize(os.path.join(loc, 'source.ttl'), format='turtle', encoding='utf-8')
+        g = RDFGraph()
+        g.parse(os.path.join(loc, 'target.xml'), format='xml')
+        g.serialize(os.path.join(loc, 'target.ttl'), format='turtle', encoding='utf-8')
+    kg1 = graphFromTurtleFile(os.path.join(loc, 'source.ttl'), message="Loading OAEI KB1")
+    kg2 = graphFromTurtleFile(os.path.join(loc, 'target.ttl'), message="Loading OAEI KB2")
+    return kg1, kg2
