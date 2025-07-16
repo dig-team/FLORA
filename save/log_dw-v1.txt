@@ -1,72 +1,143 @@
-2025-05-14 15:40:24 INFO     path_emb1: data/emb/D_W_15K_V1/kb1.pkl
-2025-05-14 15:40:24 INFO     path_emb2: data/emb/D_W_15K_V1/kb2.pkl
-2025-05-14 15:41:23 INFO     Time used for bootstrapping: 0.3398935437202454 minutes
-2025-05-14 15:41:37 INFO     Time used for aligning entities: 0.22066902716954548 minutes
-2025-05-14 15:41:41 INFO     Time used for aligning predicates: 0.07249315977096557 minutes
-2025-05-14 15:41:55 INFO     Time used for aligning entities: 0.2250766674677531 minutes
-2025-05-14 15:41:59 INFO     Time used for aligning predicates: 0.07408483028411865 minutes
-2025-05-14 15:42:12 INFO     Time used for aligning entities: 0.21441463629404703 minutes
-2025-05-14 15:42:17 INFO     Time used for aligning predicates: 0.0754712184270223 minutes
-2025-05-14 15:42:29 INFO     Time used for aligning entities: 0.1995180090268453 minutes
-2025-05-14 15:42:33 INFO     Time used for aligning predicates: 0.07514997720718383 minutes
-2025-05-14 15:42:45 INFO     Time used for aligning entities: 0.1997252901395162 minutes
-2025-05-14 15:42:50 INFO     Time used for aligning predicates: 0.07572517395019532 minutes
-2025-05-14 15:43:02 INFO     Time used for aligning entities: 0.2004599690437317 minutes
-2025-05-14 15:43:06 INFO     Time used for aligning predicates: 0.07579346497853597 minutes
-2025-05-14 15:43:18 INFO     Time used for aligning entities: 0.19196413358052572 minutes
-2025-05-14 15:43:23 INFO     Time used for aligning predicates: 0.07543050448099772 minutes
-2025-05-14 15:43:37 INFO     Time used for aligning entities: 0.23205987612406412 minutes
-2025-05-14 15:43:41 INFO     Time used for aligning predicates: 0.07514493862787883 minutes
-2025-05-14 15:43:53 INFO     Time used for aligning entities: 0.19478371540705364 minutes
-2025-05-14 15:43:58 INFO     Time used for aligning predicates: 0.07601653337478638 minutes
-2025-05-14 15:44:10 INFO     Time used for aligning entities: 0.19839150905609132 minutes
-2025-05-14 15:44:14 INFO     Time used for aligning predicates: 0.07677147388458253 minutes
-2025-05-14 15:44:27 INFO     Time used for aligning entities: 0.20438961187998453 minutes
-2025-05-14 15:44:31 INFO     Time used for aligning predicates: 0.07508318424224854 minutes
-2025-05-14 15:44:43 INFO     Time used for aligning entities: 0.19510194857915242 minutes
-2025-05-14 15:44:48 INFO     Time used for aligning predicates: 0.07717050711313883 minutes
-2025-05-14 15:45:00 INFO     Time used for aligning entities: 0.20145492951075236 minutes
-2025-05-14 15:45:04 INFO     Time used for aligning predicates: 0.07718275785446167 minutes
-2025-05-14 15:45:17 INFO     Time used for aligning entities: 0.200540292263031 minutes
-2025-05-14 15:45:21 INFO     Time used for aligning predicates: 0.07647092739741007 minutes
-2025-05-14 15:45:33 INFO     Time used for aligning entities: 0.19342378775278726 minutes
-2025-05-14 15:45:37 INFO     Time used for aligning predicates: 0.07532859643300374 minutes
-2025-05-14 15:45:50 INFO     Time used for aligning entities: 0.2034166137377421 minutes
-2025-05-14 15:45:54 INFO     Time used for aligning predicates: 0.07655499378840129 minutes
-2025-05-14 15:46:07 INFO     Time used for aligning entities: 0.2010402242342631 minutes
-2025-05-14 15:46:11 INFO     Time used for aligning predicates: 0.07520819902420044 minutes
-2025-05-14 15:46:24 INFO     Time used for aligning entities: 0.2043021043141683 minutes
-2025-05-14 15:46:28 INFO     Time used for aligning predicates: 0.07930314540863037 minutes
-2025-05-14 15:46:43 INFO     Time used for aligning entities: 0.23604944149653118 minutes
-2025-05-14 15:46:47 INFO     Time used for aligning predicates: 0.07824778159459432 minutes
-2025-05-14 15:47:00 INFO     Time used for aligning entities: 0.20332348744074505 minutes
-2025-05-14 15:47:04 INFO     Time used for aligning predicates: 0.0801186482111613 minutes
-2025-05-14 15:47:17 INFO     Time used for aligning entities: 0.21191806395848592 minutes
-2025-05-14 15:47:22 INFO     Time used for aligning predicates: 0.07704599301020304 minutes
-2025-05-14 15:47:36 INFO     Time used for aligning entities: 0.23655178944269817 minutes
-2025-05-14 15:47:41 INFO     Time used for aligning predicates: 0.07675835688908896 minutes
-2025-05-14 15:47:53 INFO     Time used for aligning entities: 0.2015812635421753 minutes
-2025-05-14 15:47:58 INFO     Time used for aligning predicates: 0.07602043946584065 minutes
-2025-05-14 15:48:12 INFO     Time used for aligning entities: 0.23408020734786988 minutes
-2025-05-14 15:48:16 INFO     Time used for aligning predicates: 0.07642945845921835 minutes
-2025-05-14 15:48:29 INFO     Time used for aligning entities: 0.20594251950581868 minutes
-2025-05-14 15:48:33 INFO     Time used for aligning predicates: 0.07503230969111124 minutes
-2025-05-14 15:48:45 INFO     Time used for aligning entities: 0.1954652786254883 minutes
-2025-05-14 15:48:50 INFO     Time used for aligning predicates: 0.0753929615020752 minutes
-2025-05-14 15:49:04 INFO     Time used for aligning entities: 0.2372912605603536 minutes
-2025-05-14 15:49:09 INFO     Time used for aligning predicates: 0.07591660420099894 minutes
-2025-05-14 15:49:20 INFO     Time used for aligning entities: 0.19062788486480714 minutes
-2025-05-14 15:49:25 INFO     Time used for aligning predicates: 0.0766543706258138 minutes
-2025-05-14 15:49:37 INFO     Time used for aligning entities: 0.20230842431386312 minutes
-2025-05-14 15:49:42 INFO     Time used for aligning predicates: 0.075686248143514 minutes
-2025-05-14 15:49:53 INFO     Time used for aligning entities: 0.18849820693333943 minutes
-2025-05-14 15:49:58 INFO     Time used for aligning predicates: 0.07576534350713095 minutes
-2025-05-14 15:50:09 INFO     Time used for aligning entities: 0.1938591162363688 minutes
-2025-05-14 15:50:14 INFO     Time used for aligning predicates: 0.07569210529327393 minutes
-2025-05-14 15:50:26 INFO     Time used for aligning entities: 0.18993143240610758 minutes
-2025-05-14 15:50:30 INFO     Time used for aligning predicates: 0.07519390185674031 minutes
-2025-05-14 15:50:41 INFO     Time used for aligning entities: 0.1851741909980774 minutes
-2025-05-14 15:50:46 INFO     Time used for aligning predicates: 0.0755767027537028 minutes
-2025-05-14 15:50:58 INFO     Time used for aligning entities: 0.19787294069925945 minutes
-2025-05-14 15:51:02 INFO     Time used for aligning predicates: 0.07535665432612101 minutes
-2025-05-14 15:51:03 INFO     Time used for the whole procedure: 9.995833766460418 minutes
+2025-07-15 18:02:32 INFO     Time used for bootstrapping: 0.3295090119043986 minutes
+2025-07-15 18:02:32 INFO     ---------------Main Loop---------------
+2025-07-15 18:02:45 INFO     ----Iteration 0----
+2025-07-15 18:02:45 INFO     Aligning entities: 0.21611756086349487 minutes
+2025-07-15 18:02:50 INFO     Aligning predicates: 0.0745470404624939 minutes
+2025-07-15 18:02:50 INFO     SameAs sum: 43451.66755541138 -> 45771.087069817826
+2025-07-15 18:03:03 INFO     ----Iteration 1----
+2025-07-15 18:03:03 INFO     Aligning entities: 0.21747151215871174 minutes
+2025-07-15 18:03:07 INFO     Aligning predicates: 0.07602654695510865 minutes
+2025-07-15 18:03:07 INFO     SameAs sum: 45771.087069817826 -> 51066.806877406714
+2025-07-15 18:03:20 INFO     ----Iteration 2----
+2025-07-15 18:03:20 INFO     Aligning entities: 0.21418950955073038 minutes
+2025-07-15 18:03:25 INFO     Aligning predicates: 0.07711879014968873 minutes
+2025-07-15 18:03:25 INFO     SameAs sum: 51066.806877406714 -> 53976.06317302937
+2025-07-15 18:03:37 INFO     ----Iteration 3----
+2025-07-15 18:03:37 INFO     Aligning entities: 0.20527496735254924 minutes
+2025-07-15 18:03:42 INFO     Aligning predicates: 0.07712123394012452 minutes
+2025-07-15 18:03:42 INFO     SameAs sum: 53976.06317302937 -> 54853.97706032713
+2025-07-15 18:03:54 INFO     ----Iteration 4----
+2025-07-15 18:03:54 INFO     Aligning entities: 0.20417367617289225 minutes
+2025-07-15 18:03:59 INFO     Aligning predicates: 0.08143576780954996 minutes
+2025-07-15 18:03:59 INFO     SameAs sum: 54853.97706032713 -> 55266.4532419572
+2025-07-15 18:04:12 INFO     ----Iteration 5----
+2025-07-15 18:04:12 INFO     Aligning entities: 0.2037266770998637 minutes
+2025-07-15 18:04:17 INFO     Aligning predicates: 0.0801626443862915 minutes
+2025-07-15 18:04:17 INFO     SameAs sum: 55266.4532419572 -> 55469.97284980723
+2025-07-15 18:04:29 INFO     ----Iteration 6----
+2025-07-15 18:04:29 INFO     Aligning entities: 0.20251027743021646 minutes
+2025-07-15 18:04:34 INFO     Aligning predicates: 0.08092363675435384 minutes
+2025-07-15 18:04:34 INFO     SameAs sum: 55469.97284980723 -> 55580.44425645768
+2025-07-15 18:04:46 INFO     ----Iteration 7----
+2025-07-15 18:04:46 INFO     Aligning entities: 0.19890607992808024 minutes
+2025-07-15 18:04:50 INFO     Aligning predicates: 0.0782183567682902 minutes
+2025-07-15 18:04:50 INFO     SameAs sum: 55580.44425645768 -> 55648.9490965258
+2025-07-15 18:05:03 INFO     ----Iteration 8----
+2025-07-15 18:05:03 INFO     Aligning entities: 0.19984043041865032 minutes
+2025-07-15 18:05:07 INFO     Aligning predicates: 0.07926281293233235 minutes
+2025-07-15 18:05:07 INFO     SameAs sum: 55648.9490965258 -> 55693.34775516616
+2025-07-15 18:05:20 INFO     ----Iteration 9----
+2025-07-15 18:05:20 INFO     Aligning entities: 0.2037835995356242 minutes
+2025-07-15 18:05:24 INFO     Aligning predicates: 0.07746580839157105 minutes
+2025-07-15 18:05:24 INFO     SameAs sum: 55693.34775516616 -> 55720.92695334596
+2025-07-15 18:05:36 INFO     ----Iteration 10----
+2025-07-15 18:05:36 INFO     Aligning entities: 0.20000489950180053 minutes
+2025-07-15 18:05:41 INFO     Aligning predicates: 0.07785920302073161 minutes
+2025-07-15 18:05:41 INFO     SameAs sum: 55720.92695334596 -> 55737.66657699377
+2025-07-15 18:05:53 INFO     ----Iteration 11----
+2025-07-15 18:05:53 INFO     Aligning entities: 0.19488027095794677 minutes
+2025-07-15 18:05:58 INFO     Aligning predicates: 0.07813562949498494 minutes
+2025-07-15 18:05:58 INFO     SameAs sum: 55737.66657699377 -> 55748.454813541226
+2025-07-15 18:06:09 INFO     ----Iteration 12----
+2025-07-15 18:06:09 INFO     Aligning entities: 0.1934002955754598 minutes
+2025-07-15 18:06:14 INFO     Aligning predicates: 0.07746644417444865 minutes
+2025-07-15 18:06:14 INFO     SameAs sum: 55748.454813541226 -> 55755.70647208639
+2025-07-15 18:06:26 INFO     ----Iteration 13----
+2025-07-15 18:06:26 INFO     Aligning entities: 0.1983452876408895 minutes
+2025-07-15 18:06:31 INFO     Aligning predicates: 0.07796887159347535 minutes
+2025-07-15 18:06:31 INFO     SameAs sum: 55755.70647208639 -> 55762.59780994681
+2025-07-15 18:06:42 INFO     ----Iteration 14----
+2025-07-15 18:06:42 INFO     Aligning entities: 0.19452003240585328 minutes
+2025-07-15 18:06:47 INFO     Aligning predicates: 0.07732120752334595 minutes
+2025-07-15 18:06:47 INFO     SameAs sum: 55762.59780994681 -> 55768.17466857535
+2025-07-15 18:06:59 INFO     ----Iteration 15----
+2025-07-15 18:06:59 INFO     Aligning entities: 0.19878895282745362 minutes
+2025-07-15 18:07:04 INFO     Aligning predicates: 0.07702381610870361 minutes
+2025-07-15 18:07:04 INFO     SameAs sum: 55768.17466857535 -> 55771.54072768953
+2025-07-15 18:07:16 INFO     ----Iteration 16----
+2025-07-15 18:07:16 INFO     Aligning entities: 0.20194952885309855 minutes
+2025-07-15 18:07:21 INFO     Aligning predicates: 0.07856651941935221 minutes
+2025-07-15 18:07:21 INFO     SameAs sum: 55771.54072768953 -> 55774.17413090705
+2025-07-15 18:07:33 INFO     ----Iteration 17----
+2025-07-15 18:07:33 INFO     Aligning entities: 0.20185728470484415 minutes
+2025-07-15 18:07:38 INFO     Aligning predicates: 0.08177708387374878 minutes
+2025-07-15 18:07:38 INFO     SameAs sum: 55774.17413090705 -> 55776.133177698845
+2025-07-15 18:07:50 INFO     ----Iteration 18----
+2025-07-15 18:07:50 INFO     Aligning entities: 0.19279194672902425 minutes
+2025-07-15 18:07:54 INFO     Aligning predicates: 0.0807676116625468 minutes
+2025-07-15 18:07:54 INFO     SameAs sum: 55776.133177698845 -> 55777.724090057425
+2025-07-15 18:08:07 INFO     ----Iteration 19----
+2025-07-15 18:08:07 INFO     Aligning entities: 0.20567971467971802 minutes
+2025-07-15 18:08:12 INFO     Aligning predicates: 0.08138517538706462 minutes
+2025-07-15 18:08:12 INFO     SameAs sum: 55777.724090057425 -> 55779.069454389144
+2025-07-15 18:08:23 INFO     ----Iteration 20----
+2025-07-15 18:08:23 INFO     Aligning entities: 0.19226736625035604 minutes
+2025-07-15 18:08:28 INFO     Aligning predicates: 0.07757638295491537 minutes
+2025-07-15 18:08:28 INFO     SameAs sum: 55779.069454389144 -> 55780.1585586143
+2025-07-15 18:08:40 INFO     ----Iteration 21----
+2025-07-15 18:08:40 INFO     Aligning entities: 0.1972071886062622 minutes
+2025-07-15 18:08:45 INFO     Aligning predicates: 0.07814916372299194 minutes
+2025-07-15 18:08:45 INFO     SameAs sum: 55780.1585586143 -> 55781.049598977064
+2025-07-15 18:08:57 INFO     ----Iteration 22----
+2025-07-15 18:08:57 INFO     Aligning entities: 0.1989494244257609 minutes
+2025-07-15 18:09:01 INFO     Aligning predicates: 0.07686731417973837 minutes
+2025-07-15 18:09:01 INFO     SameAs sum: 55781.049598977064 -> 55781.71941387853
+2025-07-15 18:09:14 INFO     ----Iteration 23----
+2025-07-15 18:09:14 INFO     Aligning entities: 0.2013060490290324 minutes
+2025-07-15 18:09:18 INFO     Aligning predicates: 0.07684787511825561 minutes
+2025-07-15 18:09:18 INFO     SameAs sum: 55781.71941387853 -> 55782.26748196381
+2025-07-15 18:09:30 INFO     ----Iteration 24----
+2025-07-15 18:09:30 INFO     Aligning entities: 0.19753394524256387 minutes
+2025-07-15 18:09:35 INFO     Aligning predicates: 0.07703533172607421 minutes
+2025-07-15 18:09:35 INFO     SameAs sum: 55782.26748196381 -> 55782.70117729897
+2025-07-15 18:09:47 INFO     ----Iteration 25----
+2025-07-15 18:09:47 INFO     Aligning entities: 0.1997950236002604 minutes
+2025-07-15 18:09:52 INFO     Aligning predicates: 0.07789724270502726 minutes
+2025-07-15 18:09:52 INFO     SameAs sum: 55782.70117729897 -> 55783.44604985034
+2025-07-15 18:10:03 INFO     ----Iteration 26----
+2025-07-15 18:10:03 INFO     Aligning entities: 0.1942108194033305 minutes
+2025-07-15 18:10:08 INFO     Aligning predicates: 0.07752648194630941 minutes
+2025-07-15 18:10:08 INFO     SameAs sum: 55783.44604985034 -> 55783.76221823739
+2025-07-15 18:10:20 INFO     ----Iteration 27----
+2025-07-15 18:10:20 INFO     Aligning entities: 0.19657644033432006 minutes
+2025-07-15 18:10:25 INFO     Aligning predicates: 0.07831303278605144 minutes
+2025-07-15 18:10:25 INFO     SameAs sum: 55783.76221823739 -> 55784.02662441172
+2025-07-15 18:10:36 INFO     ----Iteration 28----
+2025-07-15 18:10:36 INFO     Aligning entities: 0.18591835101445517 minutes
+2025-07-15 18:10:41 INFO     Aligning predicates: 0.07682784001032511 minutes
+2025-07-15 18:10:41 INFO     SameAs sum: 55784.02662441172 -> 55784.224620103414
+2025-07-15 18:10:53 INFO     ----Iteration 29----
+2025-07-15 18:10:53 INFO     Aligning entities: 0.19786819616953533 minutes
+2025-07-15 18:10:57 INFO     Aligning predicates: 0.07721062898635864 minutes
+2025-07-15 18:10:57 INFO     SameAs sum: 55784.224620103414 -> 55784.405412379165
+2025-07-15 18:11:09 INFO     ----Iteration 30----
+2025-07-15 18:11:09 INFO     Aligning entities: 0.19697718222935995 minutes
+2025-07-15 18:11:14 INFO     Aligning predicates: 0.07698510090510051 minutes
+2025-07-15 18:11:14 INFO     SameAs sum: 55784.405412379165 -> 55784.54368112638
+2025-07-15 18:11:26 INFO     ----Iteration 31----
+2025-07-15 18:11:26 INFO     Aligning entities: 0.201285723845164 minutes
+2025-07-15 18:11:31 INFO     Aligning predicates: 0.07737665176391602 minutes
+2025-07-15 18:11:31 INFO     SameAs sum: 55784.54368112638 -> 55784.68680733541
+2025-07-15 18:11:42 INFO     ----Iteration 32----
+2025-07-15 18:11:42 INFO     Aligning entities: 0.19534753561019896 minutes
+2025-07-15 18:11:47 INFO     Aligning predicates: 0.07724194924036662 minutes
+2025-07-15 18:11:47 INFO     SameAs sum: 55784.68680733541 -> 55784.80608672471
+2025-07-15 18:11:59 INFO     ----Iteration 33----
+2025-07-15 18:11:59 INFO     Aligning entities: 0.19562426805496216 minutes
+2025-07-15 18:12:04 INFO     Aligning predicates: 0.07738533020019531 minutes
+2025-07-15 18:12:04 INFO     SameAs sum: 55784.80608672471 -> 55784.92869279515
+2025-07-15 18:12:16 INFO     ----Iteration 34----
+2025-07-15 18:12:16 INFO     Aligning entities: 0.19754921595255534 minutes
+2025-07-15 18:12:20 INFO     Aligning predicates: 0.07678138812383016 minutes
+2025-07-15 18:12:20 INFO     SameAs sum: 55784.92869279515 -> 55785.02008647847
+2025-07-15 18:12:20 INFO     Time used for the whole procedure: 10.134186844031015 minutes
