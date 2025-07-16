@@ -257,20 +257,13 @@ def post_process_oaei_relation_results(prefix1, prefix2, rel_pred_same, rel_pred
     return y_pred_property_post
 
 
-
-def oaei_kg_eval(cls_gt, inst_gt, rel_gt, 
-                 cls_pred, inst_pred, rel_pred_same, rel_pred_similar,
-                 prefix1, prefix2, threshold=0.1, save_path=None):
-    """
-    Evaluate the OAEI KG track results.
-    """
-    final_results = {"instances": dict(), "classes": dict(), "properties": dict()}
-    tp_total, fp_total, fn_total = 0, 0, 0
+def post_process_oaei_results(cls_gt, inst_gt, rel_gt,
+                              cls_pred, inst_pred, rel_pred_same, rel_pred_similar,
+                              prefix1, prefix2, threshold=0.1):
     # Instances
-    tp, fp, fn = 0, 0, 0
+    instAlign = {}
     for k, v in inst_gt.items():
         if k not in inst_pred:
-            fn += 1
             continue
         # the one with maximum score
         sort_pred = sorted(inst_pred[k].items(), key=lambda x: x[1], reverse=True)
@@ -285,14 +278,66 @@ def oaei_kg_eval(cls_gt, inst_gt, rel_gt,
                     pred = ent[0]
                     score = ent[1]
                     break
-        if float(score) <= threshold * 5:
+        # 1-to-1 constraint check
+        if float(score) > instAlign.get(pred, {}).get(k, 0):
+            instAlign[pred] = {k: float(score)}
+
+    # Classes
+    clsAlign = {}
+    for k, v in cls_gt.items():
+        if k not in cls_pred:
+            continue
+        # the one with maximum score
+        pred, score = sorted(cls_pred[k].items(), key=lambda x: x[1], reverse=True)[0]
+        # 1-to-1 constraint check
+        if float(score) > clsAlign.get(pred, {}).get(k, 0):
+            clsAlign[pred] = {k: float(score)}
+        
+    # Properties
+    y_pred_property_post = post_process_oaei_relation_results(prefix1, prefix2, rel_pred_same, rel_pred_similar, threshold)
+    relAlign = {}
+    for k, v in rel_gt.items():
+        if k not in y_pred_property_post:
+            continue
+        # the one with maximum score: choose only the maximally assigned one
+        pred, score = sorted(y_pred_property_post[k].items(), key=lambda x: x[1], reverse=True)[0]
+        # 1-to-1 constraint check
+        if float(score) > relAlign.get(pred, {}).get(k, 0):
+            relAlign[pred] = {k: float(score)}
+    return instAlign, clsAlign, relAlign
+
+
+def oaei_kg_eval(cls_gt, inst_gt, rel_gt, 
+                 cls_pred, inst_pred, rel_pred_same, rel_pred_similar,
+                 prefix1, prefix2, threshold=0.1, save_path=None):
+    """
+    Evaluate the OAEI KG track results.
+    """
+    # Post-process the results
+    instAlign, clsAlign, relAlign = post_process_oaei_results(
+        cls_gt, inst_gt, rel_gt,
+        cls_pred, inst_pred, rel_pred_same, rel_pred_similar,
+        prefix1, prefix2, threshold
+    )
+
+    tp_total, fp_total, fn_total = 0, 0, 0
+    final_results = {"instances": dict(), "classes": dict(), "properties": dict()}
+    # Instances
+    tp, fp, fn = 0, 0, 0
+    for k, v in inst_gt.items():
+        if v not in instAlign:
             fn += 1
             continue
-        if pred == v:
-            final_results["instances"][k] = (pred, score)
+        score = instAlign[v].get(k, 0)
+        pred = list(instAlign[v].keys())[0] if instAlign[v] else None
+        if float(score) <= threshold:
+            fn += 1
+            continue
+        if pred == k:
+            final_results["instances"][k] = (v, score)
             tp += 1
         else:
-            final_results["instances"][k] = (pred, score)
+            final_results["instances"][pred] = (v, score)
             fp += 1
             fn += 1
 
@@ -307,16 +352,20 @@ def oaei_kg_eval(cls_gt, inst_gt, rel_gt,
     # Classes
     tp, fp, fn = 0, 0, 0
     for k, v in cls_gt.items():
-        if k not in cls_pred:
+        if v not in clsAlign:
             fn += 1
             continue
-        # the one with maximum score
-        pred, score = sorted(cls_pred[k].items(), key=lambda x: x[1], reverse=True)[0]
-        if pred == v:
-            final_results["classes"][k] = (pred, score)
+        pred = list(clsAlign[v].keys())[0] if clsAlign[v] else None
+        score = clsAlign[v].get(k, 0)
+        if float(score) <= 0:
+            fn += 1
+            continue
+        if pred == k:
+            final_results["classes"][k] = (v, score)
             tp += 1
         else:
-            final_results["classes"][k] = (pred, score)
+            final_results["classes"][pred] = (v, score)
+            print(f'Class {k} predicted as {pred} with score {score}')  # Debugging line
             fp += 1
             fn += 1
     tp_total += tp
@@ -328,23 +377,21 @@ def oaei_kg_eval(cls_gt, inst_gt, rel_gt,
     print('**Classes: \n   Precision: {:.4f}, Recall: {:.4f}, F1: {:.4f}'.format(precision, recall, f1))
 
     # Properties
-    y_pred_property_post = post_process_oaei_relation_results(prefix1, prefix2, rel_pred_same, rel_pred_similar, threshold)
-    # evaluate
     tp, fp, fn = 0, 0, 0
     for k, v in rel_gt.items():
-        if k not in y_pred_property_post:
+        if v not in relAlign:
             fn += 1
             continue
-        # the one with maximum score: choose only the maximally assigned one
-        pred, score = sorted(y_pred_property_post[k].items(), key=lambda x: x[1], reverse=True)[0]
+        pred = list(relAlign[v].keys())[0] if relAlign[v] else None
+        score = relAlign[v].get(k, 0)
         if score <= threshold:
             fn += 1
             continue
-        if pred == v:
-            final_results["properties"][k] = (pred, score)
+        if pred == k:
+            final_results["properties"][k] = (v, score)
             tp += 1
         else:
-            final_results["properties"][k] = (pred, score)
+            final_results["properties"][pred] = (v, score)
             fp += 1
             fn += 1
     # evaluate overall
@@ -366,3 +413,6 @@ def oaei_kg_eval(cls_gt, inst_gt, rel_gt,
                 for k, (pred, score) in results.items():
                     f.write(f'{k}\t{pred}\t{score}\n')
         print(f'\nSaved final results to "{save_path}"')
+
+
+
