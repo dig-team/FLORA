@@ -1,4 +1,5 @@
 import re
+import os
 import pickle
 import sys
 import torch
@@ -7,15 +8,16 @@ from torch import Tensor
 from transformers import AutoTokenizer, AutoModel
 from tqdm import tqdm
 from Prefixes import *
-import TurtleUtils
+import utils
+import Announce
 
 # Load pre-trained models for strings
-# Multilingual BERT
-Str_tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/LaBSE')
-Str_model = AutoModel.from_pretrained('sentence-transformers/LaBSE')
+# # Multilingual BERT
+# Str_tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/LaBSE')
+# Str_model = AutoModel.from_pretrained('sentence-transformers/LaBSE')
 # Monolingual BERT
-# Str_tokenizer = AutoTokenizer.from_pretrained('Lihuchen/pearl_small')
-# Str_model = AutoModel.from_pretrained('Lihuchen/pearl_small')
+Str_tokenizer = AutoTokenizer.from_pretrained('Lihuchen/pearl_small')
+Str_model = AutoModel.from_pretrained('Lihuchen/pearl_small')
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 Str_model.to(device) # gpu
 print("Pretrained Models loaded successfully...")
@@ -145,7 +147,7 @@ def embedding_strings(kb, batch_size=64):
             if len(term) <= 1:
                 print("Empty/Short literal: ", term, object)
                 continue
-            if not is_readable(term) and type == 'xsd:string':
+            if (not is_readable(term)) and type == 'xsd:string':
                 print("Unreadable literal: ", term, object)
                 continue
             if type == 'xsd:string' and is_readable(term):
@@ -198,16 +200,20 @@ if __name__ == '__main__':
         print("python literals.py <dataset path> <emb_path>")
         exit()
 
-    # print("Loading first KB...")
-    # kb1=TurtleUtils.graphFromTurtleFile(sys.argv[1])
-    # kb1predicates=kb1.predicates()
-
-    # print("Loading second KB...")
-    # kb2=TurtleUtils.graphFromTurtleFile(sys.argv[2])
-    # kb2predicates=kb2.predicates()
-
-    # kb1, kb2, gt = TurtleUtils.load_openea('/home/infres/ypeng-21/work/OM/Paris2/github/Paris2/camera-ready/FLORA/data/D_W_15K_V2')
-    kb1, kb2 = TurtleUtils.load_dbp15k(sys.argv[1], attr=True, name=True)
+    Announce.doing("Loading Knowledge Bases")
+    dataset_path = sys.argv[1]
+    if 'OpenEA' in dataset_path:
+        kb1, kb2, _ = utils.load_openea(dataset_path, attr=True)
+    elif 'DBP15k' in dataset_path:
+        kb1, kb2 = utils.load_dbp15k(dataset_path, attr=True, name=True)
+    elif 'OAEI' in dataset_path:
+        kb1, kb2 = utils.load_oaei(dataset_path, format='ttl')
+    elif 'small-test' in dataset_path:
+        kb1 = utils.graphFromTurtleFile(os.path.join(dataset_path, dataset_path.split('/')[-2]+'1.ttl'))
+        kb2 = utils.graphFromTurtleFile(os.path.join(dataset_path, dataset_path.split('/')[-2]+'2.ttl'))
+    else: 
+        raise ValueError("Unknown dataset: %s" % dataset_path)
+    Announce.done()
 
     emb_path = sys.argv[2]
     batch_size = 128
@@ -215,7 +221,7 @@ if __name__ == '__main__':
     kb2_emb = embedding_strings(kb2, batch_size)
 
     # save embeddings
-    with open(emb_path+"kb1_emb.pkl", "wb") as f:
+    with open(emb_path+"kb1.pkl", "wb") as f:
         pickle.dump(kb1_emb, f)
-    with open(emb_path+"kb2_emb.pkl", "wb") as f:
+    with open(emb_path+"kb2.pkl", "wb") as f:
         pickle.dump(kb2_emb, f)

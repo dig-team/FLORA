@@ -1,9 +1,8 @@
-import TurtleUtils
+import utils
 import Prefixes
 import Announce
 import time
 import init
-from tqdm import tqdm
 from itertools import combinations
 from collections import Counter
 import numpy as np
@@ -41,28 +40,22 @@ def get_params():
     return params_
 
 
-Announce.doing("Running FLORA")
+Announce.doing("Running FLORA...")
 
 params = get_params()
 Announce.set_logger(params)
 
 # Load knowledge bases
 Announce.doing("Loading Knowledge Bases")
-# kb1=TurtleUtils.graphFromTurtleFile(params['kb1'])
-# kb1predicates=kb1.predicates()
-# Announce.done()
-# Announce.doing("Loading second KB")
-# kb2=TurtleUtils.graphFromTurtleFile(params['kb2'])
-# kb2predicates=kb2.predicates()
 if 'OpenEA' in params['dataset']:
-    kb1, kb2, _ = TurtleUtils.load_openea(params['dataset'], attr=True)
+    kb1, kb2, _ = utils.load_openea(params['dataset'], attr=True)
 elif 'DBP15k' in params['dataset']:
-    kb1, kb2 = TurtleUtils.load_dbp15k(params['dataset'], attr=True, name=True)
+    kb1, kb2 = utils.load_dbp15k(params['dataset'], attr=True, name=True)
 elif 'OAEI' in params['dataset']:
-    kb1, kb2 = TurtleUtils.load_oaei(params['dataset'], format='ttl')
+    kb1, kb2 = utils.load_oaei(params['dataset'], format='ttl')
 elif 'small-test' in params['dataset']:
-    kb1 = TurtleUtils.graphFromTurtleFile(os.path.join(params['dataset'], params['dataset'].split('/')[-2]+'1.ttl'))
-    kb2 = TurtleUtils.graphFromTurtleFile(os.path.join(params['dataset'], params['dataset'].split('/')[-2]+'2.ttl'))
+    kb1 = utils.graphFromTurtleFile(os.path.join(params['dataset'], params['dataset'].split('/')[-2]+'1.ttl'))
+    kb2 = utils.graphFromTurtleFile(os.path.join(params['dataset'], params['dataset'].split('/')[-2]+'2.ttl'))
 else: 
     raise ValueError("Unknown dataset: %s" % params['dataset'])
 Announce.done()
@@ -146,7 +139,7 @@ def computeFunctionalities(kb, gram=[]):
             cnt = 0
             for evs in combinations(facts, n):
                 cnt += 1
-                predicate_ = tuple(sorted([TurtleUtils.invert(fact[PRED]) for fact in evs]))
+                predicate_ = tuple(sorted([utils.invert(fact[PRED]) for fact in evs]))
                 subjs_ = tuple(sorted([fact[OBJ] for fact in evs]))
                 if predicate_ not in predicate2numFacts:
                     predicate2numFacts[predicate_]=0
@@ -162,7 +155,7 @@ def computeFunctionalitiesForPredicates_old(kb, predicates=[]):
     """ Returns the functionalities of the predicates in the KB """
     predicate2numFacts={}
     predicate2subjects={}
-    predicates_inv = [TurtleUtils.invert(pred) for pred in predicates]
+    predicates_inv = [utils.invert(pred) for pred in predicates]
     predsorted = tuple(sorted(predicates))
     for subject in kb.subjects():
         predsOfsubject = set(kb.index[subject].keys())
@@ -188,8 +181,8 @@ def computeFunctionalitiesForPredicates(kb, predicates):
     pred_numFacts = 0
     pred_subjects = set()
     counter = Counter(predicates)
-    predicates_inv = sorted([TurtleUtils.invert(pred) for pred in predicates])
-    subKB = kb.headTriplesWithPredicateList({TurtleUtils.invert(pred):counter[pred] for pred in set(predicates)})
+    predicates_inv = sorted([utils.invert(pred) for pred in predicates])
+    subKB = kb.headTriplesWithPredicateList({utils.invert(pred):counter[pred] for pred in set(predicates)})
     for obj in subKB:
         for evs in combinations(subKB[obj], len(predicates_inv)):
             _, predicate_, subjs_ = zip(*evs)
@@ -198,42 +191,6 @@ def computeFunctionalitiesForPredicates(kb, predicates):
                 pred_subjects.add(tuple(sorted(subjs_)))
     return len(pred_subjects) / pred_numFacts if pred_numFacts > 0 else 0
 
-
-#################################################################
-#               Initialization                                  #
-#################################################################
-
-
-Announce.doing("Initializing Subrelations")
-predicates1 = kb1.predicates()
-predicates2 = kb2.predicates()
-predicate2superPredicate=initializePredicateSubsumption(predicates1, predicates2, relinit=0.1)
-Announce.done()
-
-Announce.doing("Computing functionalities")
-functionalities1=computeFunctionalities(kb1, gram=[1, 2])
-functionalities2=computeFunctionalities(kb2, gram=[1, 2])
-functionalities = {}
-for pred in functionalities1:
-    functionalities[pred] = functionalities1[pred]
-for pred in functionalities2:
-    if pred not in functionalities:
-        functionalities[pred] = functionalities2[pred]
-        continue
-    functionalities[pred] = min(functionalities[pred], functionalities2[pred])
-Announce.done()
-
-Announce.doing("Computing literal scores with threshold", params['init'])
-path_emb = os.path.join('data/emb/', params['dataset'].split('/')[-2])
-# path_emb1 = os.path.join('data/emb/', params['dataset'].split('/')[-1], 'kb1.pkl')
-# path_emb2 = os.path.join('data/emb/', params['dataset'].split('/')[-1], 'kb2.pkl')
-# if not os.path.exists(os.path.join(path_emb, 'kb1.pkl')) or not os.path.exists(os.path.join(path_emb, 'kb2.pkl')):
-#      FileNotFoundError(f"Embedding File does not exist in {path_emb}.")
-print("\n       path_emb1:", os.path.join(path_emb, 'kb1.pkl'))
-print("       path_emb2:", os.path.join(path_emb, 'kb2.pkl'))
-init.mapLiterals(kb1, kb2, path_emb, sameAsScores, params['init'])
-# init.initLiteralMapScores(mapScores, sameAsScores, kb1, kb2)
-Announce.done()
 
 
 #################################################################
@@ -324,7 +281,7 @@ def _1st_iteration(kb_src, kb_dst, pred2superPred, functionalities,
 
         for fact1 in kb_src.triplesWithSubject(subj_kb1):
             # We don't match literals
-            if TurtleUtils.isLiteral(fact1[OBJ]):
+            if utils.isLiteral(fact1[OBJ]):
                 continue
             # Continue if the subject has not been matched
             if fact1[SUBJ] not in ent_max_assign:
@@ -334,7 +291,7 @@ def _1st_iteration(kb_src, kb_dst, pred2superPred, functionalities,
                     continue
                 for fact2 in kb_dst.triplesWithSubject(subj_kb2, pred2superPred[fact1[PRED]]):
                     # We don't match literals
-                    if TurtleUtils.isLiteral(fact2[OBJ]):
+                    if utils.isLiteral(fact2[OBJ]):
                         continue
                     # Update
                     updateScoreMin(
@@ -509,7 +466,7 @@ def _match_entities_by_rules(kb_src, kb_dst, quasiEqvirel, queue, ent_match_tupl
             break
         
         # We don't need to match literals
-        if TurtleUtils.isLiteral(subj_kb1):
+        if utils.isLiteral(subj_kb1):
             continue
 
         # Skip if the entity is already matched
@@ -524,7 +481,7 @@ def _match_entities_by_rules(kb_src, kb_dst, quasiEqvirel, queue, ent_match_tupl
                 continue
             if max(quasiEqvirel.get(fact1[PRED], {None:0}).values()) <= 0:
                     continue
-            kb1_facts_ordered.append((fact1[OBJ], TurtleUtils.invert(fact1[PRED]), subj_kb1))
+            kb1_facts_ordered.append((fact1[OBJ], utils.invert(fact1[PRED]), subj_kb1))
         # seach order: the most informative facts first
         kb1_facts_ordered.sort(reverse=True, key=lambda x: min(max(ent_max_assign[x[SUBJ]].values()), 
                                                                max(quasiEqvirel[x[PRED]].values())))
@@ -541,7 +498,7 @@ def _match_entities_by_rules(kb_src, kb_dst, quasiEqvirel, queue, ent_match_tupl
                 aligned_evi2 = []
                 maxsubrel_score = 0
                 for evi2_ in kb_dst.triplesWithSubject(obj_kb2):
-                    if TurtleUtils.isLiteral(evi2_[OBJ]):
+                    if utils.isLiteral(evi2_[OBJ]):
                         continue
                     subrel_score = quasiEqvirel[pred_kb1].get(evi2_[PRED], 0)
                     if subrel_score <= 0:
@@ -658,16 +615,42 @@ def _match_entities_by_rules(kb_src, kb_dst, quasiEqvirel, queue, ent_match_tupl
     exit(1)
 
 
-
 #################################################################
-#                         Main Loop                             #
+#            Initialization + Bootstrapping                     #
 #################################################################
 
+
+Announce.doing("Initializing Subrelations")
+predicates1 = kb1.predicates()
+predicates2 = kb2.predicates()
+predicate2superPredicate=initializePredicateSubsumption(predicates1, predicates2, relinit=0.1)
+Announce.done()
+
+Announce.doing("Computing functionalities")
+functionalities1=computeFunctionalities(kb1, gram=[1, 2])
+functionalities2=computeFunctionalities(kb2, gram=[1, 2])
+functionalities = {}
+for pred in functionalities1:
+    functionalities[pred] = functionalities1[pred]
+for pred in functionalities2:
+    if pred not in functionalities:
+        functionalities[pred] = functionalities2[pred]
+        continue
+    functionalities[pred] = min(functionalities[pred], functionalities2[pred])
+Announce.done()
+
+Announce.doing("Computing literal scores with threshold", params['init'])
+path_emb = os.path.join('data/emb/', params['dataset'].split('/')[-2])
+print("\n       path_emb1:", os.path.join(path_emb, 'kb1.pkl'))
+print("       path_emb2:", os.path.join(path_emb, 'kb2.pkl'))
+init.mapLiterals(kb1, kb2, path_emb, sameAsScores, params['init'])
+Announce.done()
+
+
+# Bootstrapping the entity alignment by literals
 starttime = time.time()
-MAXITERATIONS = 100
-BOD = params['alpha']
-
 Announce.doing("Bootstrapping")
+BOD = params['alpha']
 bootstrap_algo(kb1, kb2, sameAsScores, predicate2superPredicate, functionalities)
 ent_maxAssign = bilateral_max_assign(sameAsScores)
 # Subrelations
@@ -676,7 +659,15 @@ map_subrelations(BOD, kb1, kb2, ent_maxAssign, predicate2superPredicate)
 quasiEqvirel = computeQuasiEqrel(kb1, kb2, predicate2superPredicate)
 Announce.done()
 logging.info("Time used for bootstrapping: %s minutes"%((time.time() - starttime)/60))
+logging.info("---------------Main Loop---------------")
 
+
+#################################################################
+#                         Main Loop                             #
+#################################################################
+
+
+MAXITERATIONS = 100
 iterations=0
 while True:
     Announce.doing("Iteration",iterations+1)
@@ -734,7 +725,8 @@ while True:
                 if ent_match_score_dict[subj1][subj2] > sameAsScores[subj1][subj2]:
                     sameAsScores[subj1][subj2] = ent_match_score_dict[subj1][subj2]
     Announce.done()
-    logging.info("Time used for aligning entities: %s minutes"%((time.time() - starttime1)/60))
+    logging.info("----Iteration %s----"%iterations)
+    logging.info("Aligning entities: %s minutes"%((time.time() - starttime1)/60))
 
     Announce.doing("Recomputing predicate inclusions")
     starttime1 = time.time()
@@ -742,12 +734,13 @@ while True:
     map_subrelations(BOD, kb1, kb2, ent_maxAssign, predicate2superPredicate)
     quasiEqvirel = computeQuasiEqrel(kb1, kb2, predicate2superPredicate)
     Announce.done()
-    logging.info("Time used for aligning predicates: %s minutes"%((time.time() - starttime1)/60))
+    logging.info("Aligning predicates: %s minutes"%((time.time() - starttime1)/60))
 
     # Check convergence
     Announce.doing("Checking convergence")
     newSameAsSum=sum(val for dict_ in sameAsScores.values() for val in dict_.values())   
     Announce.done(sameAsSum,newSameAsSum)
+    logging.info("SameAs sum: %s -> %s"%(sameAsSum, newSameAsSum))
     
     Announce.done() # Iteration
     iterations+=1
@@ -774,8 +767,8 @@ with open(os.path.join(params['save_dir'], params['save_file']), "wt", encoding=
     # Literals and instances
     for entity1 in sameAsScores:
         for entity2 in sameAsScores[entity1]:
-            if sameAsScores[entity1][entity2] >= 0.1: # report all possible scores
+            if sameAsScores[entity1][entity2] > 0: # first report all possible scores
                 out.write(entity1+"\towl:sameAs\t"+entity2+"\t.#\t"+str(sameAsScores[entity1][entity2])+"\n")
 Announce.done()
-Announce.done()
+Announce.done() # End of running FLORA
 logging.info("Time used for the whole procedure: %s minutes"%((time.time() - starttime)/60))

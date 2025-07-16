@@ -13,5 +13,5 @@ python main.py --dataset data/DBP15k/zh_en/ --save_file dbp-zh-en.ttl --alpha 3.
 python main.py --dataset data/DBP15k/ja_en/ --save_file dbp-ja-en.ttl --alpha 3.0 --init 0.7
 
 printf '==========Running KG Alignment on OAEI datasets==========\n'
-python main.py --dataset data/oaei/memoryalpha-stexpanded/ --save_file memoryalpha-stexpanded.ttl --alpha 2.0 --init 0.7
-python main.py --dataset data/oaei/starwars-swtor/ --save_file starwars-swtor.ttl --alpha 2.0 --init 0.7
+python main.py --dataset data/OAEI/memoryalpha-stexpanded/ --save_file memoryalpha-stexpanded.ttl --alpha 3.0 --init 0.7
+python main.py --dataset data/OAEI/starwars-swtor/ --save_file starwars-swtor.ttl --alpha 3.0 --init 0.7

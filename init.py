@@ -1,10 +1,7 @@
 import re
 import os
-import TurtleUtils
-from tqdm import tqdm
 import math
 from collections import defaultdict
-import time
 import pickle
 
 # Regex for literals
@@ -266,24 +263,6 @@ def mapLiterals(kb1, kb2, path_emb, sameAsScore, threshold=0.5):
         if literal1 not in sameAsScore:
             sameAsScore[literal1] = mapScores[literal1].copy()
 
-
-    # return mapScores
-
-
-# def initLiteralMapScores(mapScores, sameAsScore, kb1, kb2):
-#     '''
-#     mapScores: dict -> input dict before processing
-#     sameAsScore: dict -> output dict after processing
-#     '''
-#     # one-to-one literal mapping constraints (when multiple have max scores, keep them all.)
-#     for literal1 in mapScores:
-#         if literal1 not in kb1.index:
-#             continue
-#         if literal1.startswith('"tt'):
-#             continue
-#         # check empty mapping
-#         if literal1 not in sameAsScore:
-#             sameAsScore[literal1] = mapScores[literal1].copy()
 
 
 def jaccard_similarity(str1, str2):

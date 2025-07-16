@@ -1,18 +1,8 @@
 import os
-import re
-import Prefixes
-import pandas as pd
 import math
 import scipy.stats as st
 import xml.etree.ElementTree as ET
 
-
-# def load_openea_ref(loc):
-#     df_ref = pd.read_csv(os.path.join(loc, 'ent_links'), sep='\t', header=None)
-#     df_ref['dbp'] = df_ref[0].apply(lambda x: 'dbr:'+ unicode(x.replace('http://dbpedia.org/resource/', '')))
-#     df_ref['wd'] = df_ref[1].apply(lambda x: x.replace('http://www.wikidata.org/entity/', 'wd:'))
-#     y_gold = set(df_ref.apply(lambda x: (x['dbp'], x['wd']), axis=1))
-#     return y_gold
 
 def load_openea_ref(loc):
     gt_pairs = []
@@ -22,7 +12,8 @@ def load_openea_ref(loc):
             gt_pairs.append((head, tail))
     return gt_pairs
 
-def openea_eval(maxAssignment, y_gold):
+
+def openea_eval(maxAssignment, y_gold, save_path=None):
     y_pred = set()
     for e1 in maxAssignment:
         # if e1.startswith('dbr:'):
@@ -41,7 +32,12 @@ def openea_eval(maxAssignment, y_gold):
     print(f'Precision: {precision:.4f}')
     print(f'Recall: {recall:.4f}')
     print(f'F1: {f1:.4f}')
-    
+    if save_path is not None:
+        with open(save_path, 'w') as f:
+            for e1, e2 in y_pred:
+                f.write(f'{e1}\t{e2}\t{maxAssignment[e1][e2]}\n')
+        print(f'\nSaved final results to "{save_path}"')
+
 
 def load_ent_results(file_path, prefix, threshold=0.0):
     # store as sameAsscores
@@ -99,21 +95,6 @@ def bilateral_max_assign(sameASscore):
     return res_max_assign
 
 
-
-def unicode(txt):
-    # e.g., "Coamo,_Puerto_Rico" -> "Coamo_u002C_Puerto_Rico"
-    encoded_str = re.sub(r'[^a-zA-Z0-9_]', lambda x: "_u{:04X}_".format(ord(x.group())), txt)
-    return encoded_str
-
-def simplify_uri(uri, code=True):
-    for prefix, base in Prefixes.prefixes_dbp.items():
-        if uri.startswith(base):
-            if code:
-                return prefix + ":" + unicode(uri[len(base):])
-            else:
-                return prefix + ":" + uri[len(base):]
-    return uri
-
 def load_dbp15k_ref(loc):
     id2ent1, id2ent2 = {}, {}
     for i in range(2):
@@ -121,13 +102,13 @@ def load_dbp15k_ref(loc):
         with open(loc+'ent_ids_{}'.format(i+1), encoding='UTF-8') as f:
             for line in f.readlines():
                 ids, ent = line.strip().split('\t')
-                id2ent[int(ids)] = simplify_uri(ent)
+                id2ent[int(ids)] = ent
         if i == 0:
             id2ent1 = id2ent.copy()
         else:
             id2ent2 = id2ent.copy()
     # load supervised data
-    seed_pairs = {}
+    seed_pairs = {} # 30%
     with open(loc+'sup_pairs', encoding='UTF-8') as f:
         for line in f.readlines():
             e1, e2 = line.strip().split('\t')
@@ -161,7 +142,6 @@ def dbp15k_eval(ref_pairs, sameAsscores):
     print(f'Hit@1: {hit1 / len(ref_pairs):.4f}')
     print(f'Hit@10: {hit10 / len(ref_pairs):.4f}')
     print(f'MRR: {mrr / len(ref_pairs):.4f}')
-
 
 
 def confidence_interval(p, n, confidence=0.95):
@@ -206,19 +186,20 @@ def load_oaei_ref(loc, prefix):
 
 def load_full_results_oaei_kg_track(cls_gt, inst_gt, rel_gt, prefix, loc):
     # a simple version -> only gold standard are considered
+    # as dedicated in https://oaei.ontologymatching.org/2024/results/knowledgegraph/index.html
     y_pred_inst = dict()
     y_pred_class = dict()
     y_pred_subproperty = dict()
-    y_pred_sameAs = dict()
+    y_prop_sameAs = dict()
     with open(loc, 'r') as file:
         for line in file:
             terms = line.strip().split('\t')
             if len(terms) > 4:
-                if terms[0] in inst_gt:
+                if terms[0] in inst_gt: # instance
                     if terms[0] not in y_pred_inst:
                         y_pred_inst[terms[0]] = {}
                     y_pred_inst[terms[0]][terms[2]] = terms[4]
-                elif terms[0] in cls_gt:
+                elif terms[0] in cls_gt: # class
                     if terms[0] not in y_pred_class:
                         y_pred_class[terms[0]] = {}
                     y_pred_class[terms[0]][terms[2]] = terms[4]
@@ -227,14 +208,16 @@ def load_full_results_oaei_kg_track(cls_gt, inst_gt, rel_gt, prefix, loc):
                     if terms[0] in rel_gt or \
                             terms[2] in rel_gt:
                         if terms[1] == 'owl:sameAs' and terms[0] in rel_gt:
-                            if terms[0] not in y_pred_sameAs:
-                                y_pred_sameAs[terms[0]] = {}
-                            y_pred_sameAs[terms[0]][terms[2]] = terms[4]
+                            if terms[0] not in y_prop_sameAs:
+                                y_prop_sameAs[terms[0]] = {}
+                            y_prop_sameAs[terms[0]][terms[2]] = terms[4]
                             continue
+                        # now terms[2] in rel_gt / terms[1] not sameAs
                         if terms[0] not in y_pred_subproperty:
                             y_pred_subproperty[terms[0]] = {}
                         y_pred_subproperty[terms[0]][terms[2]] = terms[4]
-    # similar relations
+    # similar relations from subrelations
+    # refer to page 9 in paper for relation equations r\cong r'
     y_pred_similar = dict()
     for k in y_pred_subproperty:
         for v in y_pred_subproperty[k]:
@@ -244,13 +227,44 @@ def load_full_results_oaei_kg_track(cls_gt, inst_gt, rel_gt, prefix, loc):
             if v not in y_pred_similar:
                 y_pred_similar[v] = {}
             y_pred_similar[v][k] = max(float(y_pred_subproperty[k][v]), float(y_pred_subproperty.get(v, {}).get(k, 0)))
-    return y_pred_inst, y_pred_class, y_pred_similar, y_pred_sameAs
+    return y_pred_inst, y_pred_class, y_pred_similar, y_prop_sameAs
+
+
+
+def post_process_oaei_relation_results(prefix1, prefix2, rel_pred_same, rel_pred_similar, threshold=0.1):
+    # Prioritize the sameAs matches
+    y_pred_property_post = {}
+    for k, preds in rel_pred_same.items():
+        tmp = sorted(preds.items(), key=lambda x: x[1], reverse=True)
+        max_score = tmp[0][1]
+        candidate = [x for x in tmp if x[1] == max_score]
+        for uri, score in candidate:
+            if float(score) > threshold and uri.startswith('<'+prefix2+'property/'):
+                y_pred_property_post.setdefault(k, {})[uri] = float(score)
+                break
+    # Find more equivalent properties from subrelations (quasi equivalence r\cong r')
+    for pred in rel_pred_similar:
+        if pred in y_pred_property_post: # sameAs match
+            continue
+        if pred.startswith('<' + prefix1 + 'property/'):
+            for v in rel_pred_similar[pred]:
+                if v in y_pred_property_post: # sameAs match
+                    continue
+                if v.startswith('<' + prefix2 + 'property/'):
+                    if pred not in y_pred_property_post:
+                        y_pred_property_post[pred] = {}
+                    y_pred_property_post[pred][v] = float(rel_pred_similar[pred][v])
+    return y_pred_property_post
 
 
 
 def oaei_kg_eval(cls_gt, inst_gt, rel_gt, 
                  cls_pred, inst_pred, rel_pred_same, rel_pred_similar,
-                 prefix1, prefix2, threshold=0.1):
+                 prefix1, prefix2, threshold=0.1, save_path=None):
+    """
+    Evaluate the OAEI KG track results.
+    """
+    final_results = {"instances": dict(), "classes": dict(), "properties": dict()}
     tp_total, fp_total, fn_total = 0, 0, 0
     # Instances
     tp, fp, fn = 0, 0, 0
@@ -275,8 +289,10 @@ def oaei_kg_eval(cls_gt, inst_gt, rel_gt,
             fn += 1
             continue
         if pred == v:
+            final_results["instances"][k] = (pred, score)
             tp += 1
         else:
+            final_results["instances"][k] = (pred, score)
             fp += 1
             fn += 1
 
@@ -286,7 +302,7 @@ def oaei_kg_eval(cls_gt, inst_gt, rel_gt,
     precision = tp / (tp + fp) if tp + fp > 0 else 0
     recall = tp / (tp + fn) if tp + fn > 0 else 0
     f1 = 2 * precision * recall / (precision + recall) if precision + recall > 0 else 0
-    print('Instances: \n Precision: {:.4f}, Recall: {:.4f}, F1: {:.4f}'.format(precision, recall, f1))
+    print('**Instances: \n   Precision: {:.4f}, Recall: {:.4f}, F1: {:.4f}'.format(precision, recall, f1))
 
     # Classes
     tp, fp, fn = 0, 0, 0
@@ -297,8 +313,10 @@ def oaei_kg_eval(cls_gt, inst_gt, rel_gt,
         # the one with maximum score
         pred, score = sorted(cls_pred[k].items(), key=lambda x: x[1], reverse=True)[0]
         if pred == v:
+            final_results["classes"][k] = (pred, score)
             tp += 1
         else:
+            final_results["classes"][k] = (pred, score)
             fp += 1
             fn += 1
     tp_total += tp
@@ -307,32 +325,10 @@ def oaei_kg_eval(cls_gt, inst_gt, rel_gt,
     precision = tp / (tp + fp) if tp + fp > 0 else 0
     recall = tp / (tp + fn) if tp + fn > 0 else 0
     f1 = 2 * precision * recall / (precision + recall) if precision + recall > 0 else 0
-    print('Classes: \n Precision: {:.4f}, Recall: {:.4f}, F1: {:.4f}'.format(precision, recall, f1))
+    print('**Classes: \n   Precision: {:.4f}, Recall: {:.4f}, F1: {:.4f}'.format(precision, recall, f1))
 
     # Properties
-    # First find sameAs matches
-    y_pred_property_post = {}
-    for k, preds in rel_pred_same.items():
-        tmp = sorted(preds.items(), key=lambda x: x[1], reverse=True)
-        max_score = tmp[0][1]
-        candidate = [x for x in tmp if x[1] == max_score]
-        for uri, score in candidate:
-            if float(score) > threshold and uri.startswith('<'+prefix2+'property/'):
-                y_pred_property_post.setdefault(k, {})[uri] = float(score)
-                break
-    # Find more similar properties from subrelations
-    for pred in rel_pred_similar:
-        if pred in y_pred_property_post: # sameAs match
-            continue
-        if pred.startswith('<' + prefix1 + 'property/'):
-            for v in rel_pred_similar[pred]:
-                if v in y_pred_property_post: # sameAs match
-                    continue
-                if v.startswith('<' + prefix2 + 'property/'):
-                    if pred not in y_pred_property_post:
-                        y_pred_property_post[pred] = {}
-                    y_pred_property_post[pred][v] = float(rel_pred_similar[pred][v])
-
+    y_pred_property_post = post_process_oaei_relation_results(prefix1, prefix2, rel_pred_same, rel_pred_similar, threshold)
     # evaluate
     tp, fp, fn = 0, 0, 0
     for k, v in rel_gt.items():
@@ -345,18 +341,28 @@ def oaei_kg_eval(cls_gt, inst_gt, rel_gt,
             fn += 1
             continue
         if pred == v:
+            final_results["properties"][k] = (pred, score)
             tp += 1
         else:
+            final_results["properties"][k] = (pred, score)
             fp += 1
             fn += 1
+    # evaluate overall
     tp_total += tp
     fp_total += fp
     fn_total += fn
     precision = tp / (tp + fp) if tp + fp > 0 else 0
     recall = tp / (tp + fn) if tp + fn > 0 else 0
     f1 = 2 * precision * recall / (precision + recall) if precision + recall > 0 else 0
-    print('Properties: \n Precision: {:.4f}, Recall: {:.4f}, F1: {:.4f}'.format(precision, recall, f1))
+    print('**Properties: \n   Precision: {:.4f}, Recall: {:.4f}, F1: {:.4f}'.format(precision, recall, f1))
     precision_total = tp_total / (tp_total + fp_total) if tp_total + fp_total > 0 else 0
     recall_total = tp_total / (tp_total + fn_total) if tp_total + fn_total > 0 else 0
     f1_total = 2 * precision_total * recall_total / (precision_total + recall_total) if precision_total + recall_total > 0 else 0
-    print('Overall: \n Precision: {:.4f}, Recall: {:.4f}, F1: {:.4f}'.format(precision_total, recall_total, f1_total))
+    print('**Overall: \n   Precision: {:.4f}, Recall: {:.4f}, F1: {:.4f}'.format(precision_total, recall_total, f1_total))
+    if save_path is not None:
+        with open(save_path, 'w') as f:
+            for entity_type, results in final_results.items():
+                f.write(f'##### {entity_type} #####\n')
+                for k, (pred, score) in results.items():
+                    f.write(f'{k}\t{pred}\t{score}\n')
+        print(f'\nSaved final results to "{save_path}"')

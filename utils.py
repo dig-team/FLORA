@@ -4,7 +4,6 @@ Reading files of different formats: Turtle, Graph, XML.
 Portions of this code are adapted from Fabian M. Suchanek (2022) under CC-BY.
 """
 
-import gzip
 import os
 import codecs
 import re
@@ -669,6 +668,6 @@ def load_oaei(loc, format='ttl'):
         g = RDFGraph()
         g.parse(os.path.join(loc, 'target.xml'), format='xml')
         g.serialize(os.path.join(loc, 'target.ttl'), format='turtle', encoding='utf-8')
-    kg1 = graphFromTurtleFile(os.path.join(loc, 'source.ttl'), message="Loading OAEI KB1")
+    kg1 = graphFromTurtleFile(os.path.join(loc, 'source.ttl'), message="\nLoading OAEI KB1")
     kg2 = graphFromTurtleFile(os.path.join(loc, 'target.ttl'), message="Loading OAEI KB2")
     return kg1, kg2
