@@ -25,8 +25,6 @@ OBJ=2
 
 def get_params():
     parser = argparse.ArgumentParser()
-    # parser.add_argument('--kb1', type=str, default='kb1.ttl')
-    # parser.add_argument('--kb2', type=str, default='kb2.ttl')
     parser.add_argument('--dataset', type=str, default='data/OpenEA/D_W_15K_V2/')
     parser.add_argument('--save_dir', type=str, default='save')
     parser.add_argument('--save_file', type=str, default='results.ttl')
