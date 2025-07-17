@@ -1,3 +1,3 @@
 The datasets used in the paper can be downloaded directly from the following links: [OpenEA](https://github.com/nju-websoft/OpenEA), [DBP15K](https://github.com/nju-websoft/JAPE), [OAEI KG Track](https://oaei.ontologymatching.org/2024/knowledgegraph/index.html).
 
-Due to space limitations, all datasets and pretrained embeddings used in the paper are on [google drive](). Download and unzip all files in the `data` folder.
+Due to space limitations, all datasets and pretrained embeddings used in the paper are on [google drive](https://drive.google.com/file/d/1KGsSvb-RX1wpBzkUlY7DBQkn4-pEY8E_/view?usp=sharing). Download and unzip all files in the `data` folder.

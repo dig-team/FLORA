@@ -21,7 +21,7 @@ FLORA uses multiple datasets from different sources:
 
 We also provide two mini-test datasets: [Person, Restaurant](https://oaei.ontologymatching.org/2010/im/index.html) from OAEI 2010 for quick test.
 
-All datasets and pretrained embeddings used in the paper are on [google drive](). Download and unzip all files in the `data` folder.
+All datasets and pretrained embeddings used in the paper are on [google drive](https://drive.google.com/file/d/1KGsSvb-RX1wpBzkUlY7DBQkn4-pEY8E_/view?usp=sharing). Download and unzip all files in the `data` folder.
 
 For detailed statistics on each dataset, refer to `statistics.pdf` . Literal embeddings are provided as xxx.pkl files in the `data/emb/` folder of each dataset. To reproduce these embeddings, use: 
 
