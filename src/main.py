@@ -22,11 +22,11 @@ OBJ=2
 #                    Loading data                               #
 #################################################################
 
-
+# hyperparameters
 def get_params():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', type=str, default='data/OpenEA/D_W_15K_V2/')
-    parser.add_argument('--save_dir', type=str, default='save')
+    parser.add_argument('--dataset', type=str, default='OpenEA/D_W_15K_V2/')
+    parser.add_argument('--save_dir', type=str, default='../save')
     parser.add_argument('--save_file', type=str, default='results.ttl')
     parser.add_argument('--trainingdata', type=str, default=None)
     parser.add_argument('--alpha', type=float, default=3.0)
@@ -43,17 +43,22 @@ Announce.doing("Running FLORA...")
 params = get_params()
 Announce.set_logger(params)
 
+
+# File paths
+dataset_path = '../data/{a}'.format(a=params['dataset'])
+training_data_file = '../data/{a}'.format(a=params['trainingdata']) if params['trainingdata'] else None
+
 # Load knowledge bases
 Announce.doing("Loading Knowledge Bases")
 if 'OpenEA' in params['dataset']:
-    kb1, kb2, _ = utils.load_openea(params['dataset'], attr=True)
+    kb1, kb2, _ = utils.load_openea(dataset_path, attr=True)
 elif 'DBP15k' in params['dataset']:
-    kb1, kb2 = utils.load_dbp15k(params['dataset'], attr=True, name=True)
+    kb1, kb2 = utils.load_dbp15k(dataset_path, attr=True, name=True)
 elif 'OAEI' in params['dataset']:
-    kb1, kb2 = utils.load_oaei(params['dataset'], format='ttl')
+    kb1, kb2 = utils.load_oaei(dataset_path, format='ttl')
 elif 'small-test' in params['dataset']:
-    kb1 = utils.graphFromTurtleFile(os.path.join(params['dataset'], params['dataset'].split('/')[-2]+'1.ttl'))
-    kb2 = utils.graphFromTurtleFile(os.path.join(params['dataset'], params['dataset'].split('/')[-2]+'2.ttl'))
+    kb1 = utils.graphFromTurtleFile(os.path.join(dataset_path, dataset_path.split('/')[-2]+'1.ttl'))
+    kb2 = utils.graphFromTurtleFile(os.path.join(dataset_path, dataset_path.split('/')[-2]+'2.ttl'))
 else: 
     raise ValueError("Unknown dataset: %s" % params['dataset'])
 Announce.done()
@@ -61,10 +66,10 @@ Announce.done()
 # Load training data (if any)
 sameAsScores={}
 # if len(sys.argv)>4:
-if params['trainingdata'] is not None:
-    print("Loading training data from %s" % params['trainingdata'])
+if training_data_file is not None:
+    print("Loading training data from %s" % training_data_file)
     Announce.doing("Loading training data")
-    with open(params["trainingdata"], "rt", encoding="utf-8") as trainingDataFile:
+    with open(training_data_file, "rt", encoding="utf-8") as trainingDataFile:
         for line in trainingDataFile:
             split=line.strip().split("\t")
             if split[0] not in sameAsScores:
@@ -638,7 +643,7 @@ for pred in functionalities2:
 Announce.done()
 
 Announce.doing("Computing literal scores with threshold", params['init'])
-path_emb = os.path.join('data/emb/', params['dataset'].split('/')[-2])
+path_emb = os.path.join('../data/emb/', params['dataset'].split('/')[-2])
 print("\n       path_emb1:", os.path.join(path_emb, 'kb1.pkl'))
 print("       path_emb2:", os.path.join(path_emb, 'kb2.pkl'))
 init.mapLiterals(kb1, kb2, path_emb, sameAsScores, params['init'])

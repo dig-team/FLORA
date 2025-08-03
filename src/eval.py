@@ -223,10 +223,10 @@ def load_full_results_oaei_kg_track(cls_gt, inst_gt, rel_gt, prefix, loc):
         for v in y_pred_subproperty[k]:
             if k not in y_pred_similar:
                 y_pred_similar[k] = {}
-            y_pred_similar[k][v] = max(float(y_pred_subproperty[k][v]), float(y_pred_subproperty.get(v, {}).get(k, 0)))
+            y_pred_similar[k][v] = min(float(y_pred_subproperty[k][v]), float(y_pred_subproperty.get(v, {}).get(k, 1)))
             if v not in y_pred_similar:
                 y_pred_similar[v] = {}
-            y_pred_similar[v][k] = max(float(y_pred_subproperty[k][v]), float(y_pred_subproperty.get(v, {}).get(k, 0)))
+            y_pred_similar[v][k] = min(float(y_pred_subproperty[k][v]), float(y_pred_subproperty.get(v, {}).get(k, 1)))
     return y_pred_inst, y_pred_class, y_pred_similar, y_prop_sameAs
 
 
