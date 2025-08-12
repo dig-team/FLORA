@@ -40,7 +40,7 @@ python literals.py <dataset_path> <emb_path>
 
 Due to memory limitations, all datasets and pretrained embeddings used in the paper are on [google drive](https://drive.google.com/file/d/1KGsSvb-RX1wpBzkUlY7DBQkn4-pEY8E_/view?usp=sharing). Download and unzip all files in the `data` folder.
 
-**Customize Input KGs**
+**Customize Input KGs.**
 To run FLORA on two customized KGs instead of the existing dataset, please 1) first format the input KGs as (source/target) Turtle files, then 2) precompute the string embeddings and store them as a pickle file, and finally 3) create a new dataset path and change --dataset parameter when running main.py.
 
 ## Running the Code
