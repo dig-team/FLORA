@@ -59,8 +59,10 @@ elif 'OAEI' in params['dataset']:
 elif 'small-test' in params['dataset']:
     kb1 = utils.graphFromTurtleFile(os.path.join(dataset_path, dataset_path.split('/')[-2]+'1.ttl'))
     kb2 = utils.graphFromTurtleFile(os.path.join(dataset_path, dataset_path.split('/')[-2]+'2.ttl'))
-else: 
-    raise ValueError("Unknown dataset: %s" % params['dataset'])
+else:
+    print("Customized dataset: %s" % params['dataset'])
+    kb1 = utils.graphFromTurtleFile(os.path.join(dataset_path, 'source.ttl'))
+    kb2 = utils.graphFromTurtleFile(os.path.join(dataset_path, 'target.ttl'))
 Announce.done()
 
 # Load training data (if any)
