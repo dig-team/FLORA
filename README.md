@@ -22,23 +22,29 @@ pip install -r requirements.txt
 ```
 
 **Pre-compute the string embeddings.** 
-To initialize literal similarities, FLORA needs embeddings for all strings (excluding dates). To produce these embeddings, run:
+To initialize literal similarities, FLORA needs embeddings for all strings (excluding dates and numbers). To produce these embeddings separately, run:
 ```
-python literals.py <dataset_path> <embedding_path>
+python literals.py <kg1> <kg2> <embedding_path>
 ```
 
 **Run the Code.**
 
-To produce the alignment results, your could use the following command:
+To produce the alignment results, you could use the following command for existing datasets:
 
 ```bash
-python main.py --dataset OpenEA/D_W_15K_V2/ --alpha 3.0 --init 0.7 --save_file dw-v2.ttl
+python main.py --dataset OpenEA/D_W_15K_V2/ --embedding emb/D_W_15K_V2/ --alpha 3.0 --init 0.7 --output dw-v2.ttl
 ```
 
 If training data is available, run:
 ```bash
-python main.py --dataset OpenEA/D_W_15K_V2/ --trainingdata OpenEA/D_W_15K_V2/721_5fold/1/train_links --alpha 3.0 --init 0.7 --save_file dw-v2-sup.ttl
+python main.py --dataset OpenEA/D_W_15K_V2/ --embedding emb/D_W_15K_V2/ --trainingdata OpenEA/D_W_15K_V2/721_5fold/1/train_links --alpha 3.0 --init 0.7 --output dw-v2-sup.ttl
 ```
+
+To perform alignment on two custom KGs, you could use the following command:
+```bash
+python main.py --kg1 ../data/mini1.ttl --kg2 ../data/mini2.ttl --embedding emb/mini/ --alpha 3.0 --init 0.7 --output mini-test.ttl
+``` 
+If the embdding path is not provided or does not exist, embeddings will be automatically computed before performing the alignment.
 
 ## Reproducing the experiments
 
