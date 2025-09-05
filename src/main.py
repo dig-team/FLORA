@@ -25,14 +25,17 @@ OBJ=2
 # hyperparameters
 def get_params():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', type=str, default='OpenEA/D_W_15K_V2/')
-    parser.add_argument('--save_dir', type=str, default='../save')
-    parser.add_argument('--save_file', type=str, default='results.ttl')
-    parser.add_argument('--trainingdata', type=str, default=None)
-    parser.add_argument('--alpha', type=float, default=3.0)
-    parser.add_argument('--init', type=float, default=0.7)
-    parser.add_argument('--gramN', type=int, default=100)
-    parser.add_argument('--epsilon', type=float, default=0.1)
+    parser.add_argument('--dataset', type=str, default=None, help='dataset name for KG alignment, e.g., OpenEA/D_W_15K_V2/')
+    parser.add_argument('--output', type=str, default='results.ttl', help='output file name')
+    parser.add_argument('--embedding', type=str, default=None, help='embedding folder for the input two KGs, e.g., emb/D_W_15K_V2/')
+    parser.add_argument('--trainingdata', type=str, default=None, help='training data file name if any')
+    parser.add_argument('--alpha', type=float, default=3.0, help='benefit of doubt factor for calculating subrelation scores')
+    parser.add_argument('--init', type=float, default=0.7, help='initial literal similarity threshold')
+    parser.add_argument('--gramN', type=int, default=100, help='maximum number of evidences to consider for each entity during alignment')
+    parser.add_argument('--epsilon', type=float, default=0.1, help='convergence threshold')
+    # Optional parameters for customized datasets
+    parser.add_argument('--kg1', type=str, default='../data/source.ttl', help='customized source turtle file as KG1')
+    parser.add_argument('--kg2', type=str, default='../data/target.ttl', help='customized target turtle file as KG2')
     args, _ = parser.parse_known_args()
     params_ = vars(args)
     return params_
@@ -45,25 +48,32 @@ Announce.set_logger(params)
 
 
 # File paths
-dataset_path = '../data/{a}'.format(a=params['dataset'])
+dataset_path = '../data/{a}'.format(a=params['dataset']) if params['dataset'] else None
 training_data_file = '../data/{a}'.format(a=params['trainingdata']) if params['trainingdata'] else None
+emb_path = '../data/{a}'.format(a=params['embedding']) if params['embedding'] else '../data/emb/' # default path
+output_path = '../save/{a}'.format(a=params['output'])
+
 
 # Load knowledge bases
 Announce.doing("Loading Knowledge Bases")
-if 'OpenEA' in params['dataset']:
-    kb1, kb2, _ = utils.load_openea(dataset_path, attr=True)
-elif 'DBP15k' in params['dataset']:
-    kb1, kb2 = utils.load_dbp15k(dataset_path, attr=True, name=True)
-elif 'OAEI' in params['dataset']:
-    kb1, kb2 = utils.load_oaei(dataset_path, format='ttl')
-elif 'small-test' in params['dataset']:
-    kb1 = utils.graphFromTurtleFile(os.path.join(dataset_path, dataset_path.split('/')[-2]+'1.ttl'))
-    kb2 = utils.graphFromTurtleFile(os.path.join(dataset_path, dataset_path.split('/')[-2]+'2.ttl'))
-else:
-    print("Customized dataset: %s" % params['dataset'])
-    kb1 = utils.graphFromTurtleFile(os.path.join(dataset_path, 'source.ttl'))
-    kb2 = utils.graphFromTurtleFile(os.path.join(dataset_path, 'target.ttl'))
-Announce.done()
+if params['dataset'] is not None:
+    if 'OpenEA' in params['dataset']:
+        kb1, kb2, _ = utils.load_openea(dataset_path, attr=True)
+    elif 'DBP15k' in params['dataset']:
+        kb1, kb2 = utils.load_dbp15k(dataset_path, attr=True, name=True)
+    elif 'OAEI' in params['dataset']:
+        kb1, kb2 = utils.load_oaei(dataset_path, format='ttl')
+    elif 'small-test' in params['dataset']:
+        kb1 = utils.graphFromTurtleFile(os.path.join(dataset_path, dataset_path.split('/')[-2]+'1.ttl'))
+        kb2 = utils.graphFromTurtleFile(os.path.join(dataset_path, dataset_path.split('/')[-2]+'2.ttl'))
+    else:
+        raise ValueError("Unknown dataset %s" % params['dataset'])
+else: # customized input kgs
+    # check existence
+    assert os.path.exists(params['kg1']), "File %s does not exist!" % params['kg1']
+    assert os.path.exists(params['kg2']), "File %s does not exist!" % params['kg2']
+    kb1 = utils.graphFromTurtleFile(params['kg1'])
+    kb2 = utils.graphFromTurtleFile(params['kg2'])
 
 # Load training data (if any)
 sameAsScores={}
@@ -107,6 +117,7 @@ def initializePredicateSubsumption(predicates1, predicates2, pred2superPred12={}
 
 
 def updatePredicateSubsumption(pred2superPred12, pred2superPred21, previousPredicate2superPredicate):
+    """ Updates the predicate subsumptions from two directions: kb1->kb2, kb2->kb1 """
     for pred1 in pred2superPred12:
         if previousPredicate2superPredicate.get(pred1) is None:
             previousPredicate2superPredicate[pred1] = {}
@@ -156,33 +167,8 @@ def computeFunctionalities(kb, gram=[]):
     return { predicate : len(predicate2subjects[predicate])/predicate2numFacts[predicate] for predicate in predicate2numFacts }    
 
 
-def computeFunctionalitiesForPredicates_old(kb, predicates=[]):
-    """ Returns the functionalities of the predicates in the KB """
-    predicate2numFacts={}
-    predicate2subjects={}
-    predicates_inv = [utils.invert(pred) for pred in predicates]
-    predsorted = tuple(sorted(predicates))
-    for subject in kb.subjects():
-        predsOfsubject = set(kb.index[subject].keys())
-        if len(set(predicates_inv).intersection(predsOfsubject)) != len(set(predicates_inv)):
-            continue
-        facts = list(kb.triplesWithSubject(subject, set(predicates_inv)))
-        for evs in combinations(facts, len(predicates_inv)):
-            candPredicate = tuple(sorted(predicates_inv))
-            predicate_ = tuple(sorted([fact[PRED] for fact in evs]))
-            if predicate_ != candPredicate:
-                continue
-            subjs_ = tuple(sorted([fact[OBJ] for fact in evs]))
-            if predsorted not in predicate2numFacts:
-                predicate2numFacts[predsorted]=0
-                predicate2subjects[predsorted]=set()
-            predicate2numFacts[predsorted]+=1
-            predicate2subjects[predsorted].add(subjs_)
-    return len(predicate2subjects[predsorted])/predicate2numFacts[predsorted] if predicate2numFacts else 0
-
-
-
 def computeFunctionalitiesForPredicates(kb, predicates):
+    """ Returns the functionalities of the given predicates list in the KB """
     pred_numFacts = 0
     pred_subjects = set()
     counter = Counter(predicates)
@@ -277,6 +263,7 @@ def violated(x, y):
 #################################################################
 def _1st_iteration(kb_src, kb_dst, pred2superPred, functionalities,
         queue, ent_match_tuple_queue, ent_max_assign):
+    """ The first iteration used for bootstrapping the algorithm """
     ent_match_scores = dict()
     while not queue.empty():
         try:
@@ -319,6 +306,7 @@ def _1st_iteration(kb_src, kb_dst, pred2superPred, functionalities,
 
 
 def bootstrap_algo(kb_src, kb_dst, sameAsScore, pred2superPred, functionalities):
+    """ Bootstrapping the algorithm using the initial literal alignments """
     ent_max_assign = bilateral_max_assign(sameAsScore)
     mgr_ = mp.Manager()
     subjs_kb1 = kb1.subjects()
@@ -356,6 +344,7 @@ def bootstrap_algo(kb_src, kb_dst, sameAsScore, pred2superPred, functionalities)
 
 
 def map_subrelations(alpha, kb_src, kb_dst, ent_maxAssign, previouspredicate2superPredicate):
+    """ Maps subrelations (both directions) using the current entity alignments """
     # Match predicates
     pred2superPred1 = {}
     # print("\n Mapping predicates forward...")
@@ -405,6 +394,9 @@ def map_subrelations(alpha, kb_src, kb_dst, ent_maxAssign, previouspredicate2sup
 
 
 def computeQuasiEqrel(kb_src, kb_dst, pred2superPred):
+    """ Computes the quasi equivalence relations between the two KGs' predicates, 
+        the quasi equivalence is represented as r\cong r' in paper.
+    """
     quasiEqrel_ = {} # from kb1 to kb2
     for pred1 in pred2superPred:
         for pred2 in pred2superPred[pred1]:
@@ -422,6 +414,7 @@ def computeQuasiEqrel(kb_src, kb_dst, pred2superPred):
 
 
 def bilateral_max_assign(sameASscore):
+    """ Computes the bilateral max assignment from the similarity scores, refer to equation (3) in paper """
     match_e1_to_e2, match_e2_to_e1 = {}, {}
     for e1, matches in sameASscore.items():
         if matches:
@@ -645,10 +638,18 @@ for pred in functionalities2:
 Announce.done()
 
 Announce.doing("Computing literal scores with threshold", params['init'])
-path_emb = os.path.join('../data/emb/', params['dataset'].split('/')[-2])
-print("\n       path_emb1:", os.path.join(path_emb, 'kb1.pkl'))
-print("       path_emb2:", os.path.join(path_emb, 'kb2.pkl'))
-init.mapLiterals(kb1, kb2, path_emb, sameAsScores, params['init'])
+# Precompute the literal embeddings if necessary
+if params['embedding'] is not None and \
+    os.path.exists(os.path.join(emb_path, 'kb1.pkl')) and \
+        os.path.exists(os.path.join(emb_path, 'kb2.pkl')):
+        print("\n       Loading precomputed literal embeddings from %s" % emb_path)
+else:
+    Announce.doing("PreComputing literal embeddings...")
+    import literals
+    literals.compute_literal_embeddings(kb1, kb2, emb_path)
+    Announce.done()
+init.mapLiterals(kb1, kb2, emb_path, sameAsScores, params['init'])
+
 Announce.done()
 
 
@@ -757,7 +758,7 @@ while True:
 # Write out results
 #################################################################
 Announce.doing("Writing out results")
-with open(os.path.join(params['save_dir'], params['save_file']), "wt", encoding="utf-8") as out:
+with open(output_path, "wt", encoding="utf-8") as out:
     for p in Prefixes.prefixes:
         out.write("@prefix "+p+": <"+Prefixes.prefixes[p]+"> .\n")
     # Predicates

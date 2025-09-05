@@ -38,12 +38,12 @@ def done(*message):
 
 
 def set_logger(args):
-    if not os.path.exists(args['save_dir']):
-        os.makedirs(os.path.join(os.getcwd(), args['save_dir']))
-    log_file = os.path.join(args['save_dir'], 'log_'+args['save_file'][:-4]+'.txt')    
+    if not os.path.exists('../save/logs/'):
+        os.makedirs(os.path.join(os.getcwd(), '../save/logs/'))
+    log_file = os.path.join('../save/logs/', 'log_'+args['output'][:-4]+'.txt')    
     logging.basicConfig(
         format='%(asctime)s %(levelname)-8s %(message)s',
-        level=logging.DEBUG,
+        level=logging.INFO,
         datefmt='%Y-%m-%d %H:%M:%S',
         filename=log_file,
         filemode='w'

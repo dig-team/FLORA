@@ -10,17 +10,24 @@ from tqdm import tqdm
 from Prefixes import *
 import utils
 import Announce
+import os
+
+os.environ["TOKENIZERS_PARALLELISM"] = "false"  # safe
+
 
 # Load pre-trained models for strings
+model_name = 'Lihuchen/pearl_small' # or 'sentence-transformers/LaBSE'
+Str_model = AutoModel.from_pretrained(model_name)
+Str_tokenizer = AutoTokenizer.from_pretrained(model_name)
 # # Multilingual BERT
 # Str_tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/LaBSE')
 # Str_model = AutoModel.from_pretrained('sentence-transformers/LaBSE')
 # Monolingual BERT
-Str_tokenizer = AutoTokenizer.from_pretrained('Lihuchen/pearl_small')
-Str_model = AutoModel.from_pretrained('Lihuchen/pearl_small')
+# Str_tokenizer = AutoTokenizer.from_pretrained('Lihuchen/pearl_small')
+# Str_model = AutoModel.from_pretrained('Lihuchen/pearl_small')
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 Str_model.to(device) # gpu
-print("Pretrained Models loaded successfully...")
+print(f"Pretrained Model {model_name} loaded successfully...")
 
 
 def average_pool(last_hidden_states: Tensor,
@@ -145,10 +152,10 @@ def embedding_strings(kb, batch_size=64):
         if isLiteral(object):
             term, _, _, type = splitLiteral(object)
             if len(term) <= 1:
-                print("Empty/Short literal: ", term, object)
+                # print("Empty/Short literal: ", term, object)
                 continue
             if (not is_readable(term)) and type == 'xsd:string':
-                print("Unreadable literal: ", term, object)
+                # print("Unreadable literal: ", term, object)
                 continue
             if type == 'xsd:string' and is_readable(term):
                 if term in literal2id:
@@ -192,30 +199,30 @@ def jaccard_similarity(str1, str2):
     union = len(s1 | s2)
     return intersection / union
 
+def compute_literal_embeddings(kb1, kb2, emb_path, batch_size=128):
+    kb1_emb = embedding_strings(kb1, batch_size)
+    kb2_emb = embedding_strings(kb2, batch_size)
+    # save embeddings
+    if not os.path.exists(emb_path):
+        os.makedirs(emb_path)
+    with open(emb_path+"kb1.pkl", "wb") as f:
+        pickle.dump(kb1_emb, f)
+    with open(emb_path+"kb2.pkl", "wb") as f:
+        pickle.dump(kb2_emb, f)
 
 
 if __name__ == '__main__':
 
-    if len(sys.argv)<2:
-        print("python literals.py <dataset path> <emb_path>")
+    if len(sys.argv)<3:
+        print("python literals.py <kg1> <kg2> <emb_path>")
         exit()
 
     Announce.doing("Loading Knowledge Bases")
-    dataset_path = sys.argv[1]
-    if 'OpenEA' in dataset_path:
-        kb1, kb2, _ = utils.load_openea(dataset_path, attr=True)
-    elif 'DBP15k' in dataset_path:
-        kb1, kb2 = utils.load_dbp15k(dataset_path, attr=True, name=True)
-    elif 'OAEI' in dataset_path:
-        kb1, kb2 = utils.load_oaei(dataset_path, format='ttl')
-    elif 'small-test' in dataset_path:
-        kb1 = utils.graphFromTurtleFile(os.path.join(dataset_path, dataset_path.split('/')[-2]+'1.ttl'))
-        kb2 = utils.graphFromTurtleFile(os.path.join(dataset_path, dataset_path.split('/')[-2]+'2.ttl'))
-    else: 
-        raise ValueError("Unknown dataset: %s" % dataset_path)
+    kb1 = utils.graphFromTurtleFile(sys.argv[1])
+    kb2 = utils.graphFromTurtleFile(sys.argv[2])
     Announce.done()
 
-    emb_path = sys.argv[2]
+    emb_path = sys.argv[3]
     batch_size = 128
     kb1_emb = embedding_strings(kb1, batch_size)
     kb2_emb = embedding_strings(kb2, batch_size)

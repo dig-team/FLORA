@@ -1,0 +1,7 @@
+2025-08-03 19:16:42 INFO     Time used for bootstrapping: 0.010965391000111898 minutes
+2025-08-03 19:16:42 INFO     ---------------Main Loop---------------
+2025-08-03 19:16:43 INFO     ----Iteration 0----
+2025-08-03 19:16:43 INFO     Aligning entities: 0.011231938997904459 minutes
+2025-08-03 19:16:43 INFO     Aligning predicates: 2.1298726399739584e-06 minutes
+2025-08-03 19:16:43 INFO     SameAs sum: 2.0 -> 2.0
+2025-08-03 19:16:43 INFO     Time used for the whole procedure: 0.022236398855845132 minutes
