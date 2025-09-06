@@ -8,7 +8,7 @@ FLORA is an unsupervised system for automatic knowledge graph (KG) alignment, jo
 FLORA is a simple yet effective method that (1) is unsupervised, i.e., does not require training data, (2) provides a holistic
 alignment for entities and relations iteratively, (3) is based on fuzzy logic and thus delivers interpretable results, (4) provably converges, (5) allows dangling entities, i.e., entities without a counterpart in the other KG, and (6) achieves state-of-the-art results on major benchmarks.
 
-FLORA extends the advanced system [PARIS](https://github.com/dig-team/PARIS), which has three key limitations: (1) no convergence guarantees, (2) poor performance when functional relations are absent, and (3) inability to see literal similarities beyond a strict identity.
+FLORA extends [PARIS](https://github.com/dig-team/PARIS) system, which had three key limitations: (1) no convergence guarantees, (2) poor performance when functional relations are absent, and (3) the inability to see literal similarities beyond a strict identity.
 
 ## Running FLORA
 
@@ -26,25 +26,15 @@ To initialize literal similarities, FLORA needs embeddings for all strings (excl
 ```
 python literals.py <kg1> <kg2> <embedding_path>
 ```
+Here, kg1 and kg2 are paths to the knowledge graphs in Turtle format, and embedding_path is a path to a folder where the embeddings can be stored.
 
 **Run the Code.**
 
-To produce the alignment results, you could use the following command for existing datasets:
-
+To align two KGs, adapt the following command to your case:
 ```bash
-python main.py --dataset OpenEA/D_W_15K_V2/ --embedding emb/D_W_15K_V2/ --alpha 3.0 --init 0.7 --output dw-v2.ttl
-```
-
-If training data is available, run:
-```bash
-python main.py --dataset OpenEA/D_W_15K_V2/ --embedding emb/D_W_15K_V2/ --trainingdata OpenEA/D_W_15K_V2/721_5fold/1/train_links --alpha 3.0 --init 0.7 --output dw-v2-sup.ttl
-```
-
-To perform alignment on two custom KGs, you could use the following command:
-```bash
-python main.py --kg1 ../data/mini1.ttl --kg2 ../data/mini2.ttl --embedding emb/mini/ --alpha 3.0 --init 0.7 --output mini-test.ttl
+python main.py --kg1 ../data/mini1.ttl --kg2 ../data/mini2.ttl --embedding emb/mini/ --output mini-test.ttl
 ``` 
-If the embdding path is not provided or does not exist, embeddings will be automatically computed before performing the alignment.
+If the embdding path is not provided or does not exist, embeddings will be automatically computed before performing the alignment. Optional parameters can be set with --alpha, --init, and --epsilon, see  [our paper](https://suchanek.name/work/publications/iswc-2025.pdf) for a description.
 
 ## Reproducing the experiments
 
@@ -59,6 +49,17 @@ We also provide two mini-test datasets: [Person, Restaurant](https://oaei.ontolo
 For detailed statistics on each dataset, please refer to `statistics.pdf`.
 
 Due to memory limitations, all datasets and pretrained embeddings used in the paper are on [google drive](https://drive.google.com/file/d/1KGsSvb-RX1wpBzkUlY7DBQkn4-pEY8E_/view?usp=sharing). Download and unzip all files in the `data` folder.
+
+To produce the alignment results, use the following command for existing datasets:
+
+```bash
+python main.py --dataset OpenEA/D_W_15K_V2/ --embedding emb/D_W_15K_V2/ --alpha 3.0 --init 0.7 --output dw-v2.ttl
+```
+
+If training data is available, run:
+```bash
+python main.py --dataset OpenEA/D_W_15K_V2/ --embedding emb/D_W_15K_V2/ --trainingdata OpenEA/D_W_15K_V2/721_5fold/1/train_links --alpha 3.0 --init 0.7 --output dw-v2-sup.ttl
+```
 
 You can also run `bash run.sh` to reproduce the results.
 
