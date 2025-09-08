@@ -34,7 +34,7 @@ To align two KGs, adapt the following command to your case:
 ```bash
 python main.py --kg1 ../data/mini1.ttl --kg2 ../data/mini2.ttl --embedding emb/mini/ --output mini-test.ttl
 ``` 
-If the embdding path is not provided or does not exist, embeddings will be automatically computed before performing the alignment. Optional parameters can be set with --alpha, --init, and --epsilon, see  [our paper](https://suchanek.name/work/publications/iswc-2025.pdf) for a description.
+If the embdding path is not provided or does not exist, embeddings will be automatically computed before performing the alignment. Optional parameters can be set with --alpha, --init, and --epsilon, see  [our paper](https://suchanek.name/work/publications/iswc-2025.pdf) or run `python main.py --help` for a description.
 
 ## Reproducing the experiments
 
