@@ -49,7 +49,7 @@ FLORA uses multiple datasets from different sources:
 We also provide two mini-test datasets: [Person, Restaurant](https://oaei.ontologymatching.org/2010/im/index.html) from OAEI 2010 for quick test. 
 For detailed statistics on each dataset, please refer to `statistics.pdf`.
 
-Due to memory limitations, all datasets and pretrained embeddings used in the paper are on [google drive](https://drive.google.com/file/d/1KGsSvb-RX1wpBzkUlY7DBQkn4-pEY8E_/view?usp=sharing). Download and unzip all files in the `data` folder.
+Due to memory limitations, all datasets and pretrained embeddings used in the paper are on the [drive](https://nextcloud.r2.enst.fr/nextcloud/index.php/s/xj3oStmzLcknicr). Download and unzip all files in the `data` folder.
 
 To produce the alignment results, use the following command for existing datasets:
 
