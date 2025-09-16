@@ -34,7 +34,8 @@ To align two KGs, adapt the following command to your case:
 ```bash
 python main.py --kg1 ../data/mini1.ttl --kg2 ../data/mini2.ttl --embedding emb/mini/ --output mini-test.ttl
 ``` 
-If the embdding path is not provided or does not exist, embeddings will be automatically computed before performing the alignment. Optional parameters can be set with --alpha, --init, and --epsilon, see  [our paper](https://suchanek.name/work/publications/iswc-2025.pdf) or run `python main.py --help` for a description.
+If the embdding path is not provided or does not exist, embeddings will be automatically computed before performing the alignment. Optional parameters can be set with --alpha, --init, and --epsilon, see  [our paper](https://suchanek.name/work/publications/iswc-2025.pdf) or run `python main.py --help` for a description. 
+If training data is available, specify its file path with --trainingdata parameter. The training file can be in any format (e.g., .txt, .ttl, .csv) but contain aligned entities between two KGs.
 
 ## Reproducing the experiments
 
@@ -73,8 +74,8 @@ If you use this project for academic purposes, please cite  [our paper](https://
 ```
 @inproceedings{FLORA,
     title = "FLORA: Unsupervised Knowledge Graph Alignment by Fuzzy Logic",
-    author = "Yiwen Peng, Thomas Bonald, Fabian M. Suchanek",
-    booktitle = "ISWC",
+    author = "Peng, Yiwen and Bonald, Thomas and Suchanek, Fabian",
+    booktitle = "International Semantic Web Conference (ISWC)",
     year = 2025
 }
 ```
