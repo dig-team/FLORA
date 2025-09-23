@@ -23,7 +23,7 @@ pip install -r requirements.txt
 
 **Pre-compute the string embeddings.** 
 To initialize literal similarities, FLORA needs embeddings for all strings (excluding dates and numbers). To produce these embeddings separately, run:
-```bash
+```
 python literals.py <kg1> <kg2> <embedding_path>
 ```
 An example could be:
