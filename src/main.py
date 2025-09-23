@@ -50,7 +50,10 @@ Announce.set_logger(params)
 # File paths
 dataset_path = '../data/{a}'.format(a=params['dataset']) if params['dataset'] else None
 training_data_file = '../data/{a}'.format(a=params['trainingdata']) if params['trainingdata'] else None
-emb_path = '../data/{a}'.format(a=params['embedding']) if params['embedding'] else '../data/emb/' # default path
+if dataset_path is not None:
+    emb_path = '../data/{a}'.format(a=params['embedding']) if params['embedding'] else '../data/emb/' # default path
+else:
+    emb_path = params['embedding'] if params['embedding'] else '../data/emb/' # default path
 output_path = '../save/{a}'.format(a=params['output'])
 
 
@@ -689,7 +692,8 @@ while True:
         ent_queue.put(subj_kb1)
     
     tasks = []
-    num_workers = 90
+    num_cpus = mp.cpu_count()
+    num_workers = min(num_cpus-1, 90)
     ent_match_tuple_queue = mgr.Queue()
     for _ in range(num_workers):
         task = mp.Process(

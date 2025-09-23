@@ -228,7 +228,7 @@ if __name__ == '__main__':
     kb2_emb = embedding_strings(kb2, batch_size)
 
     # save embeddings
-    with open(emb_path+"kb1.pkl", "wb") as f:
+    with open(os.path.join(emb_path, "kb1.pkl"), "wb") as f:
         pickle.dump(kb1_emb, f)
-    with open(emb_path+"kb2.pkl", "wb") as f:
+    with open(os.path.join(emb_path, "kb2.pkl"), "wb") as f:
         pickle.dump(kb2_emb, f)
