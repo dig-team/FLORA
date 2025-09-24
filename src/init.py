@@ -231,7 +231,6 @@ def mapLiterals(kb1, kb2, path_emb, sameAsScore, threshold=0.5):
         id2literal_kb2 = {v: k for k, v in literal2id_kb2.items()}
         # id2literal_kb1 = {v: k for k, v in literal2id_kb1.items()}
         similarity_mat = embedding_matrix_kb1 @ embedding_matrix_kb2.T
-        # print("Start calculating similarity matrix...")
         for key1 in strBucket1:
             if key1 in strBucket2 and len(key1.strip('"')) > 0: 
                 continue

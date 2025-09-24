@@ -18,7 +18,27 @@ OBJ=2
 #               Predicates and Functionalities                  #
 #################################################################
 def initializePredicateSubsumption(predicates1, predicates2, pred2superPred12={}, pred2superPred21={}, relinit=0.1):
-    """ Initializes all identical relations to 1.0, all others as given or else to RELINC """
+    """ 
+    Initializes all identical relations to 1.0, all others as given or else to RELINC 
+
+    Parameters
+    ----------
+    predicates1 : set
+        set of predicates in KB1
+    predicates2 : set
+        set of predicates in KB2
+    pred2superPred12 : dict, optional
+        subsumption scores from predicates in KB1 to predicates in KB2
+    pred2superPred21 : dict, optional
+        subsumption scores from predicates in KB2 to predicates in KB1
+    relinit : float, optional
+        initial score for non-identical relations, by default 0.1
+    
+    Returns
+    -------
+    result : dict
+        Nested dictionary of pairwise subsumption scores across KGs in both directions
+    """
     result = {}
     for pred1 in predicates1:
         if pred1 not in result:
@@ -39,7 +59,18 @@ def initializePredicateSubsumption(predicates1, predicates2, pred2superPred12={}
 
 
 def updatePredicateSubsumption(pred2superPred12, pred2superPred21, previousPredicate2superPredicate):
-    """ Updates the predicate subsumptions from two directions: kb1->kb2, kb2->kb1 """
+    """ 
+    Updates the predicate subsumptions from two directions: kb1->kb2, kb2->kb1 
+
+    Parameters
+    ----------
+    pred2superPred12 : dict
+        current subsumption scores from predicates in KB1 to predicates in KB2
+    pred2superPred21 : dict
+        current subsumption scores from predicates in KB2 to predicates in KB1
+    previousPredicate2superPredicate : dict
+        previous subsumption scores to be updated
+    """
     for pred1 in pred2superPred12:
         if previousPredicate2superPredicate.get(pred1) is None:
             previousPredicate2superPredicate[pred1] = {}
@@ -57,7 +88,21 @@ def updatePredicateSubsumption(pred2superPred12, pred2superPred21, previousPredi
 
 
 def computeFunctionalities(kb, gram=[]):
-    """ Returns the functionalities of the predicates in the KB """
+    """ 
+    Returns the functionalities of the predicates in the KB 
+
+    Parameters
+    ----------
+    kb : Graph
+        The input knowledge base
+    gram : list
+        List of integers indicating the n-grams to consider for functionality computation
+    
+    Returns
+    -------
+    dict
+        A dictionary mapping predicates to their functionalities
+    """
     predicate2numFacts={}
     predicate2subjects={}
     for subject in kb.subjects():
@@ -89,7 +134,21 @@ def computeFunctionalities(kb, gram=[]):
 
 
 def computeFunctionalitiesForPredicates(kb, predicates):
-    """ Returns the functionalities of the given predicates list in the KB """
+    """ 
+    Returns the functionalities of the given predicates list in the KB 
+
+    Parameters
+    ----------
+    kb : Graph
+        The input knowledge base
+    predicates : list
+        Relation list to compute functionalities for
+    
+    Returns
+    -------
+    float
+        The functionality of the given relation list in the KB
+    """
     pred_numFacts = 0
     pred_subjects = set()
     counter = Counter(predicates)
@@ -110,7 +169,21 @@ def computeFunctionalitiesForPredicates(kb, predicates):
 #################################################################
 
 def updateScoreMin(mapping, key1, key2, *body):
-    """ Updates mapping[key1][key2] so that the rule body=>mapping[key1][key2] holds """
+    """ 
+    Updates mapping[key1][key2] so that the rule body=>mapping[key1][key2] holds 
+        using the minimum operator (Godel logic), as shown in equation (1) in the paper.
+    
+    Parameters
+    ----------
+    mapping : dict
+        Nested dictionary to be updated with the entity alignment scores
+    key1 : hashable
+        The entity from KB1
+    key2 : hashable
+        The entity from KB2
+    body : list of float
+        The values in the body of the rule
+    """
     curScore = 0
     if key1 in mapping and key2 in mapping.get(key1, {}):
         curScore = mapping[key1][key2]
@@ -124,7 +197,23 @@ def updateScoreMin(mapping, key1, key2, *body):
 
 
 def updateScoreAdditiveMin(mapping, key1, key2, factor, *body):
-    """ Updates mapping[key1][key2] so that the rule body=>mapping[key1][key2] holds, but adds the values """
+    """ 
+    Updates mapping[key1][key2] so that the rule body=>mapping[key1][key2] holds, but adds the values. 
+    It is used for subrelation rules, as shown in equation (2) in the paper.
+
+    Parameters
+    ----------
+    mapping : dict
+        Nested dictionary to be updated with the subrelation scores
+    key1 : hashable
+        The predicate from KB1
+    key2 : hashable
+        The predicate from KB2
+    factor : float
+        Normalization factor (already multipled by benefit of the doubt paramter)
+    body : list of float
+        The values in the body of the rule
+    """
     curScore = 0
     if key1 in mapping and key2 in mapping.get(key1, {}):
         curScore = mapping[key1][key2]
@@ -137,6 +226,18 @@ def updateScoreAdditiveMin(mapping, key1, key2, factor, *body):
 
 
 def updateMaxScoreMin(mapping, pred, fact, *body):
+    """ 
+    Parameters
+    ----------
+    mapping : dict
+        Dictionary to be updated with the maximum aligned scoring fact for each predicate
+    pred : hashable
+        The predicate from KB2
+    fact : tuple
+        The fact from KB2
+    body : list of float
+        The values in the body of the rule
+    """
     # subrelation rules
     score = min(body)
     if pred not in mapping:
@@ -147,44 +248,31 @@ def updateMaxScoreMin(mapping, pred, fact, *body):
     return
 
 
-# Other useful functions
-def filter_unique_patterns(list1, list2):
-    '''
-    Select list1 based on list2 pattern
-    example: list1 = ['a', 'b', 'c']
-             list2 = ['A', 'B', 'A']
-             return: [(['a', 'b'], ['A', 'B']), (['b', 'c'], ['B', 'A'])]
-    '''
-    unique_patterns = set(list2)
-    pattern_len = len(unique_patterns)
-    results = []
-    for indices in combinations(range(len(list2)), pattern_len):
-        selected_elm2 = [list2[i] for i in indices]
-        if len(set(selected_elm2)) == pattern_len:
-            selected_elm1 = [list1[i] for i in indices]
-            results.append((selected_elm1, selected_elm2))
-    return results
-
-
-def violated(x, y):
-    """
-    Check if x and y violate the rule, 
-        i.e., if there are two adjacent elements in x that are the same, 
-              the corresponding elements in y should not be the same.
-    """
-    for i in range(len(x) - 1):
-        if x[i] == x[i + 1]:
-            if y[i] == y[i + 1]:
-                return True
-    return False
-
-
 #################################################################
 #                      Procedure                                #
 #################################################################
 def _1st_iteration(kb_src, kb_dst, pred2superPred, functionalities,
         queue, ent_match_tuple_queue, ent_max_assign):
-    """ The first iteration used for bootstrapping the algorithm """
+    """ 
+    The first iteration used for bootstrapping the algorithm using the initial literal alignments.
+    
+    Parameters
+    ----------
+    kb_src : Graph
+        The source knowledge base
+    kb_dst : Graph
+        The target knowledge base
+    pred2superPred : dict
+        Nested dictionary of pairwise subsumption scores across KGs in both directions
+    functionalities : dict
+        A dictionary mapping predicates to their functionalities
+    queue : mp.Queue
+        A multiprocessing queue containing the entities to be aligned
+    ent_match_tuple_queue : mp.Queue
+        A multiprocessing queue to store the resulting entity alignment scores
+    ent_max_assign : dict
+        The bilateral max assignment computed from the initial literal alignments
+    """
     ent_match_scores = dict()
     while not queue.empty():
         try:
@@ -227,7 +315,22 @@ def _1st_iteration(kb_src, kb_dst, pred2superPred, functionalities,
 
 
 def bootstrap_algo(kb_src, kb_dst, sameAsScore, pred2superPred, functionalities):
-    """ Bootstrapping the algorithm using the initial literal alignments """
+    """ 
+    Bootstrapping the algorithm using the initial literal alignments.
+
+    Parameters
+    ----------
+    kb_src : Graph
+        The source knowledge base
+    kb_dst : Graph
+        The target knowledge base
+    sameAsScore : dict
+        Nested dictionary of entity alignment scores (includes initial literal alignments)
+    pred2superPred : dict
+        Nested dictionary of pairwise subsumption scores across KGs in both directions
+    functionalities : dict
+        A dictionary mapping predicates to their functionalities
+    """
     ent_max_assign = bilateral_max_assign(sameAsScore)
     mgr_ = mp.Manager()
     subjs_kb1 = kb_src.subjects()
@@ -264,13 +367,30 @@ def bootstrap_algo(kb_src, kb_dst, sameAsScore, pred2superPred, functionalities)
 
 
 def map_subrelations(alpha, kb_src, kb_dst, ent_maxAssign, previouspredicate2superPredicate):
-    """ Maps subrelations (both directions) using the current entity alignments """
+    """ 
+    Maps subrelations (both directions) using the current entity alignments.
+
+    Parameters
+    ----------
+    alpha : float
+        Benefit of the doubt parameter for subrelation mapping
+    kb_src : Graph
+        The source knowledge base
+    kb_dst : Graph
+        The target knowledge base
+    ent_maxAssign : dict
+        The bilateral max assignment computed from the current entity alignments
+    previouspredicate2superPredicate : dict
+        Previous subsumption scores to be updated
+    """
     # Match predicates
     pred2superPred1 = {}
     # Direction: kb1 -> kb2
     for fact1 in kb_src:
         if fact1[SUBJ] not in ent_maxAssign:
             continue
+        # For each fact1, find the best matching fact2 for each relation r2
+        # So that for the given relation pair (r1, r2), there is one most matched fact2
         rel2maxFact = {} # {rel2: (fact2, score)}
         for subject2 in ent_maxAssign[fact1[SUBJ]]:
             if subject2 not in kb_dst.index:
@@ -312,8 +432,23 @@ def map_subrelations(alpha, kb_src, kb_dst, ent_maxAssign, previouspredicate2sup
 
 
 def computeQuasiEqrel(kb_src, kb_dst, pred2superPred):
-    """ Computes the quasi equivalence relations between the two KGs' predicates, 
-        the quasi equivalence is represented as r\cong r' in paper.
+    """ 
+    Computes the quasi equivalence relations between the two KGs' predicates, 
+    the quasi equivalence is represented as r\cong r' in paper.
+
+    Parameters
+    ----------
+    kb_src : Graph
+        The source knowledge base
+    kb_dst : Graph
+        The target knowledge base
+    pred2superPred : dict
+        Nested dictionary of pairwise subsumption scores across KGs in both directions
+    
+    Returns
+    -------
+    quasiEqrel_ : dict
+        Nested dictionary of quasi equivalence relations
     """
     quasiEqrel_ = {} # from kb1 to kb2
     for pred1 in pred2superPred:
@@ -332,7 +467,19 @@ def computeQuasiEqrel(kb_src, kb_dst, pred2superPred):
 
 
 def bilateral_max_assign(sameASscore):
-    """ Computes the bilateral max assignment from the similarity scores, refer to equation (3) in paper """
+    """ 
+    Computes the bilateral max assignment from the similarity scores, refer to equation (3) in paper.
+
+    Parameters
+    ----------
+    sameASscore : dict
+        Nested dictionary of entity alignment scores
+    
+    Returns
+    -------
+    res_max_assign : dict
+        The bilateral max assignment of entities
+    """
     match_e1_to_e2, match_e2_to_e1 = {}, {}
     for e1, matches in sameASscore.items():
         if matches:
@@ -372,7 +519,29 @@ def bilateral_max_assign(sameASscore):
 
 # Matching in parallel
 def _match_entities_by_rules(kb_src, kb_dst, quasiEqvirel, queue, ent_match_tuple_queue, sameAsScore, functionalities, params):
-    """ Match entities in parallel using the rules """
+    """ 
+    Match entities in parallel using the rules, corresponding to equation (2) in the paper.
+    The function consists of two parts: candidate search and entity alignment.
+
+    Parameters
+    ----------
+    kb_src : Graph
+        The source knowledge base
+    kb_dst : Graph
+        The target knowledge base
+    quasiEqvirel : dict
+        Nested dictionary of quasi equivalence relations
+    queue : mp.Queue
+        A multiprocessing queue containing the entities to be aligned
+    ent_match_tuple_queue : mp.Queue
+        A multiprocessing queue to store the resulting entity alignment scores
+    sameAsScore : dict
+        Nested dictionary of all entity alignment scores (includes initial literal alignments)
+    functionalities : dict
+        A dictionary mapping predicates to their functionalities
+    params : dict
+        A dictionary of parameters, including 'gramN' (the maximum n-gram size to consider)
+    """
     ent_match_scores = dict()
     ent_max_assign = bilateral_max_assign(sameAsScore)
     while not queue.empty():
@@ -457,6 +626,7 @@ def _match_entities_by_rules(kb_src, kb_dst, quasiEqvirel, queue, ent_match_tupl
                 subj2evi2[subj2].append(single_evi2)
         
         # Selection Algorithm
+        # select the entities with the most evidences
         subj2_count = dict()
         maxCount = 0
         for subj2 in subj2evi2:
@@ -474,7 +644,8 @@ def _match_entities_by_rules(kb_src, kb_dst, quasiEqvirel, queue, ent_match_tupl
             continue
         
 
-        # Apply rules
+        # Alignment Algorithm
+        # Apply rules in order to update the scores
         gramN = min(20, maxCount)
         for subj_kb2 in subj2_count:
             assert len(subj2evi1[subj_kb2]) == len(subj2evi2[subj_kb2])

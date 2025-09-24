@@ -40,6 +40,26 @@ def openea_eval(maxAssignment, y_gold, save_path=None):
 
 
 def load_ent_results(file_path, prefix, threshold=0.0):
+    """
+    Load the entity alignment results from the given file path.
+    Only consider the entities starting with the given prefix and with scores above the threshold.
+
+    Parameters
+    ----------
+    file_path : str
+        The path to the file containing all the entity alignment results.
+    prefix : str
+        The prefix to filter the entities.
+    threshold : float
+        The score threshold to filter the alignments.
+    
+    Returns
+    -------
+    sameAsscores : dict
+        A dictionary of valid entity alignment scores.
+    ent_max_assign : dict
+        A dictionary of bilateral max assignment results.
+    """
     # store as sameAsscores
     sameAsscores = {}
     with open(file_path, 'r') as file:
@@ -185,6 +205,33 @@ def load_oaei_ref(loc, prefix):
 
 
 def load_full_results_oaei_kg_track(cls_gt, inst_gt, rel_gt, prefix, loc):
+    """
+    Load the full results from the OAEI KG track output file.
+    
+    Parameters
+    ----------
+    cls_gt : dict
+        The ground truth class alignments.
+    inst_gt : dict
+        The ground truth instance alignments.
+    rel_gt : dict
+        The ground truth property alignments.
+    prefix : str
+        The prefix to filter the entities.
+    loc : str
+        The path to the output file.
+    
+    Returns
+    -------
+    y_pred_inst : dict
+        The predicted instance alignments with scores.
+    y_pred_class : dict
+        The predicted class alignments with scores.
+    y_pred_similar : dict
+        The predicted similar property alignments with scores.
+    y_prop_sameAs : dict
+        The predicted equivalent property alignments with scores.
+    """
     # a simple version -> only gold standard are considered
     # as dedicated in https://oaei.ontologymatching.org/2024/results/knowledgegraph/index.html
     y_pred_inst = dict()
@@ -232,6 +279,27 @@ def load_full_results_oaei_kg_track(cls_gt, inst_gt, rel_gt, prefix, loc):
 
 
 def post_process_oaei_relation_results(prefix1, prefix2, rel_pred_same, rel_pred_similar, threshold=0.1):
+    """
+    Post-process the relation alignment results from the OAEI KG track.
+
+    Parameters
+    ----------
+    prefix1 : str
+        The prefix of the source knowledge base.
+    prefix2 : str
+        The prefix of the target knowledge base.
+    rel_pred_same : dict
+        The predicted equivalent property alignments with scores.
+    rel_pred_similar : dict
+        The predicted similar property alignments with scores.
+    threshold : float
+        The score threshold to filter the alignments.
+    
+    Returns
+    -------
+    y_pred_property_post : dict
+        The post-processed equivalent property alignments with scores.
+    """
     # Prioritize the sameAs matches
     y_pred_property_post = {}
     for k, preds in rel_pred_same.items():
