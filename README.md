@@ -26,9 +26,9 @@ To initialize literal similarities, FLORA needs embeddings for all strings (excl
 ```
 python literals.py <kg1> <kg2> <embedding_path>
 ```
-An example could be:
+For example:
 ```bash
-python literals.py ../data/mini1.ttl ../data/mini2.ttl ../data/emb/mini/
+python literals.py ../data/kg1.ttl ../data/kg2.ttl ../data/emb/
 ```
 Here, kg1 and kg2 are paths to the knowledge graphs in Turtle format, and embedding_path is a path to a folder where the embeddings can be stored.
 
@@ -36,7 +36,7 @@ Here, kg1 and kg2 are paths to the knowledge graphs in Turtle format, and embedd
 
 To align two KGs, adapt the following command to your case:
 ```bash
-python main.py --kg1 ../data/mini1.ttl --kg2 ../data/mini2.ttl --embedding ../data/emb/mini/ --output mini-test.ttl
+python main.py --kg1 ../data/kg1.ttl --kg2 ../data/kg2.ttl --embedding ../data/emb/ --output results.ttl
 ``` 
 If the embdding path is not provided or does not exist, embeddings will be automatically computed before performing the alignment. Optional parameters can be set with --alpha, --init, and --epsilon, see  [our paper](https://suchanek.name/work/publications/iswc-2025.pdf) or run `python main.py --help` for a description. 
 If training data is available, specify its file path with --trainingdata parameter. The training file can be in any format (e.g., .txt, .ttl, .csv) but contain aligned entities between two KGs.

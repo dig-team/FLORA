@@ -27,7 +27,8 @@ Str_tokenizer = AutoTokenizer.from_pretrained(model_name)
 # Str_model = AutoModel.from_pretrained('Lihuchen/pearl_small')
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 Str_model.to(device) # gpu
-print(f"Pretrained Model {model_name} loaded successfully...")
+Announce.doing(f"Pretrained Model {model_name} loaded successfully...")
+Announce.done()
 
 
 def average_pool(last_hidden_states: Tensor,
@@ -172,7 +173,7 @@ def embedding_strings(kb, batch_size=64):
     # Compute embeddings in batches
     embeddings_list = []
     for i in tqdm(range(0, len(literals), batch_size),
-                  desc="Computing embeddings"):
+                  desc="        Computing embeddings"):
         batch_literals = literals[i:i + batch_size]
         with torch.no_grad():
             embeddings = encode_text(Str_model, batch_literals).cpu()
@@ -214,7 +215,8 @@ def compute_literal_embeddings(kb1, kb2, emb_path, batch_size=128):
 if __name__ == '__main__':
 
     if len(sys.argv)<3:
-        print("python literals.py <kg1> <kg2> <emb_path>")
+        print("Lack parameters, please format the command like: " \
+        "python literals.py <kg1> <kg2> <emb_path>")
         exit()
 
     Announce.doing("Loading Knowledge Bases")

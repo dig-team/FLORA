@@ -7,27 +7,54 @@ import multiprocessing as mp
 import argparse
 import logging
 import os
+import sys
 import align
 
 
-#################################################################
-#                    Loading data                               #
-#################################################################
-
 # hyperparameters
+class CustomFormatter(argparse.ArgumentDefaultsHelpFormatter,
+                      argparse.RawTextHelpFormatter):
+    pass
+
 def get_params():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset', type=str, default=None, help='dataset name for KG alignment, e.g., OpenEA/D_W_15K_V2/')
-    parser.add_argument('--output', type=str, default='results.ttl', help='output file name')
-    parser.add_argument('--embedding', type=str, default=None, help='embedding folder for the input two KGs, e.g., emb/D_W_15K_V2/')
-    parser.add_argument('--trainingdata', type=str, default=None, help='training data file name if any')
-    parser.add_argument('--alpha', type=float, default=3.0, help='benefit of doubt factor for calculating subrelation scores')
-    parser.add_argument('--init', type=float, default=0.7, help='initial literal similarity threshold')
-    parser.add_argument('--gramN', type=int, default=100, help='maximum number of evidences to consider for each entity during alignment')
-    parser.add_argument('--epsilon', type=float, default=0.1, help='convergence threshold')
+    parser = argparse.ArgumentParser(
+        usage=argparse.SUPPRESS,
+        description="""\
+        
+        FLORA: Unsupervised Knowledge Graph Alignment by Fuzzy Logic
+
+        Usage: 
+        There are two different ways of calling FLORA.
+
+        1) For Custom KGs, please provide the input KGs explicitly through --kg1, --kg2, for example:
+            python main.py --kg1 ../data/kg1.ttl --kg2 ../data/kg2.ttl --embedding ../data/emb/ --output results.ttl
+
+        2) For benchmark datasets, please use --dataset parameter, for example:
+            python main.py --dataset OpenEA/D_W_15K_V2/ --embedding emb/D_W_15K_V2/ --alpha 3.0 --init 0.7 --output dw-v2.ttl
+
+        To quickly test the code, you can use the small-test dataset:
+            python main.py --dataset small-test/mini/ --embedding emb/mini/ --output mini-test.ttl
+        """,
+        formatter_class=CustomFormatter
+    )
+    parser.add_argument('--alpha', type=float, default=3.0, help='Benefit of doubt factor for calculating subrelation scores')
+    parser.add_argument('--init', type=float, default=0.7, help='Initial literal similarity threshold')
+    parser.add_argument('--gramN', type=int, default=100, help='The maximum number of evidences to consider for each entity during alignment')
+    parser.add_argument('--epsilon', type=float, default=0.01, help='Convergence threshold')
+    parser.add_argument('--output', type=str, default='results.ttl', help='Output file name')
+    parser.add_argument('--embedding', type=str, default=None, help='Embedding folder path for the input two KGs, e.g., emb/D_W_15K_V2/')
+    parser.add_argument('--trainingdata', type=str, default=None, help='Training data file name if any')
+    # Default datasets
+    parser.add_argument('--dataset', type=str, default=None, help='Dataset name for KG alignment, e.g., OpenEA/D_W_15K_V2/')
     # Optional parameters for customized datasets
     parser.add_argument('--kg1', type=str, default='../data/source.ttl', help='customized source turtle file as KG1')
     parser.add_argument('--kg2', type=str, default='../data/target.ttl', help='customized target turtle file as KG2')
+
+    # Show help if no args
+    if len(sys.argv)==1:
+        parser.print_help()
+        sys.exit(1)
+
     args, _ = parser.parse_known_args()
     params_ = vars(args)
     return params_
@@ -40,7 +67,6 @@ if __name__ == '__main__':
     params = get_params()
     Announce.set_logger(params)
 
-
     # File paths
     dataset_path = '../data/{a}'.format(a=params['dataset']) if params['dataset'] else None
     training_data_file = '../data/{a}'.format(a=params['trainingdata']) if params['trainingdata'] else None
@@ -50,6 +76,10 @@ if __name__ == '__main__':
         emb_path = params['embedding'] if params['embedding'] else '../data/emb/' # default path
     output_path = '../save/{a}'.format(a=params['output'])
 
+
+    #################################################################
+    #                    Loading data                               #
+    #################################################################
 
     # Load knowledge bases
     Announce.doing("Loading Knowledge Bases")
@@ -252,5 +282,4 @@ if __name__ == '__main__':
                 if sameAsScores[entity1][entity2] > 0: # first report all possible scores
                     out.write(entity1+"\towl:sameAs\t"+entity2+"\t.#\t"+str(sameAsScores[entity1][entity2])+"\n")
     Announce.done()
-    Announce.done() # End of running FLORA
     logging.info("Time used for the whole procedure: %s minutes"%(round((time.time() - starttime)/60, 5)))
