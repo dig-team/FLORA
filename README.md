@@ -16,7 +16,7 @@ FLORA extends [PARIS](https://github.com/dig-team/PARIS) system, which had three
 Similar to PARIS, FLORA needs two knowledge graphs, which each contain: (1) a large number of instances. (2) a limited number of relations, (3) a large number of facts between instances, (4) a large number of facts between an instance and a literal. The input KGs have to be in [Turtle format](https://en.wikipedia.org/wiki/Turtle_(syntax)).
 
 **Set up the environment.**
-Clone this repository and set up the environment via "requirements.txt".
+Clone this repository and set up the environment via "requirements.txt". Supports Python >=3.9, <3.12.
 ```
 pip install -r requirements.txt
 ```
