@@ -1,6 +1,6 @@
 # FLORA
 
-_This is a Python implementation of the paper [FLORA: Unsupervised Knowledge Graph Alignment by Fuzzy Logic](https://suchanek.name/work/publications/iswc-2025.pdf)._
+_This is a Python implementation of the paper [FLORA: Unsupervised Knowledge Graph Alignment by Fuzzy Logic](https://suchanek.name/work/publications/iswc-2025.pdf) (best paper award at ISWC 2025)._
 ![model](docs/pipeline.png)
 
 FLORA is an unsupervised system for automatic knowledge graph (KG) alignment, jointly matching entities and relations in one KG to their equivalents in another.
