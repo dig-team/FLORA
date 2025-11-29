@@ -346,9 +346,9 @@ def post_process_oaei_results(cls_gt, inst_gt, rel_gt,
                     pred = ent[0]
                     score = ent[1]
                     break
-        # 1-to-1 constraint check
-        if float(score) > instAlign.get(pred, {}).get(k, 0):
-            instAlign[pred] = {k: float(score)}
+            # 1-to-1 constraint check
+            if float(score) > instAlign.get(pred, {}).get(k, 0):
+                instAlign[pred] = {k: float(score)}
 
     # Classes
     clsAlign = {}
