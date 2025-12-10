@@ -480,40 +480,58 @@ def bilateral_max_assign(sameASscore):
     res_max_assign : dict
         The bilateral max assignment of entities
     """
-    match_e1_to_e2, match_e2_to_e1 = {}, {}
-    for e1, matches in sameASscore.items():
-        if matches:
-            max_score = max(matches.values())
-            for e2 in matches:
-                if matches[e2] == max_score:
-                    if e1 not in match_e1_to_e2:
-                        match_e1_to_e2[e1] = {}
-                    match_e1_to_e2[e1][e2] = matches[e2]
-                    if e2 not in match_e2_to_e1:
-                        match_e2_to_e1[e2] = {}
-                        match_e2_to_e1[e2][e1] = matches[e2]
-                        continue
-
-                    max_score_e2 = max(match_e2_to_e1[e2].values())
-                    if matches[e2] > max_score_e2:
-                        match_e2_to_e1[e2] = {e1: matches[e2]}
-                    elif max_score_e2 == matches[e2]:
-                        match_e2_to_e1[e2][e1] = matches[e2]
-    res_max_assign = {} # bilateral max assignment
-    for e2 in match_e2_to_e1:
-        # exact match case, avoid duplicates
-        if e2 in match_e2_to_e1[e2]:
-            res_max_assign[e2] = {e2: match_e2_to_e1[e2][e2]}
+    # get max match for kb1
+    max_match_e={}
+    for e, e_prime_scores in sameASscore.items():
+        if not e_prime_scores:
             continue
-        for e1 in match_e2_to_e1[e2]:
-            if e1 in match_e1_to_e2 and e2 in match_e1_to_e2.get(e1, {}):
-                if e2 not in res_max_assign:
-                    res_max_assign[e2] = {}
-                res_max_assign[e2][e1] = match_e1_to_e2[e1][e2]
-                if e1 not in res_max_assign:
-                    res_max_assign[e1] = {}
-                res_max_assign[e1][e2] = match_e2_to_e1[e2][e1]
-    return res_max_assign
+        max_score = max(e_prime_scores.values())
+        max_targets_e = []
+        for e_prime, score in e_prime_scores.items():
+            if score == max_score:
+                max_targets_e.append(e_prime)
+        if max_targets_e:
+            max_match_e[e] = {'score': max_score, 'targets': set(max_targets_e)}
+    
+    # get sameAsscore inverse: kb2 -> kb1
+    e_prime_to_e_scores = {}
+    for e, e_prime_scores in sameASscore.items():
+        for e_prime, score in e_prime_scores.items():
+            if e_prime not in e_prime_to_e_scores:
+                e_prime_to_e_scores[e_prime] = {}
+            e_prime_to_e_scores[e_prime][e] = score
+    
+    # get max match for kb2
+    max_match_e_prime = {}
+    for e_prime, e_scores in e_prime_to_e_scores.items():
+        max_score_e_prime = max(e_scores.values())
+        max_targets_e_prime = []
+        for e, score in e_scores.items():
+            if score == max_score_e_prime:
+                max_targets_e_prime.append(e)
+        if max_targets_e_prime:
+            max_match_e_prime[e_prime] = {'score': max_score_e_prime, 'targets': set(max_targets_e_prime)}
+    
+    # bilateral max assignment
+    res_max_assign = {}
+    for e, match_data in max_match_e.items():
+        max_score = match_data['score']
+        max_targets = match_data['targets']
+
+        for e_prime in max_targets:
+            if (e_prime in max_match_e_prime and \
+                max_match_e_prime[e_prime]['score'] == max_score and \
+                e in max_match_e_prime[e_prime]['targets']):
+
+                # write (e, e')
+                if e not in res_max_assign:
+                    res_max_assign[e] = {}
+                res_max_assign[e][e_prime] = max_score
+                # write (e',e)
+                if e_prime not in res_max_assign:
+                    res_max_assign[e_prime] = {}
+                res_max_assign[e_prime][e] = max_score
+    return res_max_assign   
 
 
 
