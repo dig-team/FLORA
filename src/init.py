@@ -201,58 +201,63 @@ def compareLiterals(sameAsScores, bucket1, bucket2, datatype=None):
                     for object2 in bucket2[key]:
                         sameAsScores[object1][object2] = 1.0
 
+def compareLiterals_identity(sameAsScores, bucket1, bucket2):
+    for key in bucket1:
+        if key in bucket2:
+            for object1 in bucket1[key]:
+                if object1 not in sameAsScores:
+                    sameAsScores[object1] = {}
+                for object2 in bucket2[key]:
+                    sameAsScores[object1][object2] = 1.0
 
-def mapLiterals(kb1, kb2, path_emb, sameAsScore, threshold=0.5):
+def mapLiterals(kb1, kb2, path_emb, sameAsScore, identity=False, threshold=0.5):
     mapScores = {}
     quantityBucket1, digitBucket1, strBucket1, dateBucket1 = getLiteralBuckets(kb1)
     quantityBucket2, digitBucket2, strBucket2, dateBucket2 = getLiteralBuckets(kb2)
-    # Direction kb1 -> kb2
-    # Compare strings
-    # compareLiterals(mapScores, strBucket1, strBucket2, 'string')
-    # compareLiterals(mapScores, strBucket2, strBucket1, 'string') # bidirectional
-    # Dates
-    compareLiterals(mapScores, dateBucket1, dateBucket2, 'date')
-    # Compare numbers
-    compareLiterals(mapScores, quantityBucket1, quantityBucket2, 'quantity')
-    compareLiterals(mapScores, digitBucket1, digitBucket2, 'digit')
+    if not identity:
+        # Dates
+        compareLiterals(mapScores, dateBucket1, dateBucket2, 'date')
+        # Compare numbers
+        compareLiterals(mapScores, quantityBucket1, quantityBucket2, 'quantity')
+        compareLiterals(mapScores, digitBucket1, digitBucket2, 'digit')
 
-    # Compare strings
-    for key1 in strBucket1:
-        if key1 in strBucket2 and len(key1.strip('"')) > 0:
-            for object1 in strBucket1[key1]:
-                if object1 not in mapScores:
-                    mapScores[object1]={}
-                for object2 in strBucket2[key1]:
-                    mapScores[object1][object2] = 1.0 # exact match
+        # Compare strings
+        compareLiterals_identity(mapScores, strBucket1, strBucket2) # first get exact match
 
-    if os.path.exists(os.path.join(path_emb, 'kb1.pkl')) and os.path.exists(os.path.join(path_emb, 'kb2.pkl')):
-        literal2id_kb1, embedding_matrix_kb1 = load_emb(os.path.join(path_emb, 'kb1.pkl'))
-        literal2id_kb2, embedding_matrix_kb2 = load_emb(os.path.join(path_emb, 'kb2.pkl'))
-        id2literal_kb2 = {v: k for k, v in literal2id_kb2.items()}
-        # id2literal_kb1 = {v: k for k, v in literal2id_kb1.items()}
-        similarity_mat = embedding_matrix_kb1 @ embedding_matrix_kb2.T
-        for key1 in strBucket1:
-            if key1 in strBucket2 and len(key1.strip('"')) > 0: 
-                continue
-            if key1 in literal2id_kb1:
-                max_indexs = similarity_mat[literal2id_kb1[key1], :].argsort()[::-1]
-                for max_index in max_indexs[:1]:
-                    # recheck max score for strings
-                    if id2literal_kb2[max_index] not in strBucket2:
-                        continue
-                    if similarity_mat[literal2id_kb1[key1], max_index] < threshold:
-                        continue
-                    for object1 in strBucket1[key1]:
-                        if object1 in mapScores and \
-                            round(max(mapScores.get(object1, {None:0}).values()), 2) >= 1.0:
+        if os.path.exists(os.path.join(path_emb, 'kb1.pkl')) and os.path.exists(os.path.join(path_emb, 'kb2.pkl')):
+            literal2id_kb1, embedding_matrix_kb1 = load_emb(os.path.join(path_emb, 'kb1.pkl'))
+            literal2id_kb2, embedding_matrix_kb2 = load_emb(os.path.join(path_emb, 'kb2.pkl'))
+            id2literal_kb2 = {v: k for k, v in literal2id_kb2.items()}
+            # id2literal_kb1 = {v: k for k, v in literal2id_kb1.items()}
+            similarity_mat = embedding_matrix_kb1 @ embedding_matrix_kb2.T
+            for key1 in strBucket1:
+                if key1 in strBucket2 and len(key1.strip('"')) > 0: 
+                    continue
+                if key1 in literal2id_kb1:
+                    max_indexs = similarity_mat[literal2id_kb1[key1], :].argsort()[::-1]
+                    for max_index in max_indexs[:1]:
+                        # recheck max score for strings
+                        if id2literal_kb2[max_index] not in strBucket2:
                             continue
-                        if object1 not in mapScores:
-                            mapScores[object1]={}
-                        for object2 in strBucket2[id2literal_kb2[max_index]]:
-                            # mapScores[object1][object2] = max_score
-                            mapScores[object1][object2] = similarity_mat[literal2id_kb1[key1], max_index] 
-    else: # no embeddings files available
-        print("   Warning: No valid embedding files for literals, Using exact match only.")
+                        if similarity_mat[literal2id_kb1[key1], max_index] < threshold:
+                            continue
+                        for object1 in strBucket1[key1]:
+                            if object1 in mapScores and \
+                                round(max(mapScores.get(object1, {None:0}).values()), 2) >= 1.0:
+                                continue
+                            if object1 not in mapScores:
+                                mapScores[object1]={}
+                            for object2 in strBucket2[id2literal_kb2[max_index]]:
+                                # mapScores[object1][object2] = max_score
+                                mapScores[object1][object2] = similarity_mat[literal2id_kb1[key1], max_index] 
+        else: # no embeddings files available
+            print("   Warning: No valid embedding files for literals, Using exact match only.")
+    else:
+        # Identity mapping only
+        compareLiterals_identity(mapScores, strBucket1, strBucket2)
+        compareLiterals_identity(mapScores, dateBucket1, dateBucket2)
+        compareLiterals_identity(mapScores, quantityBucket1, quantityBucket2)
+        compareLiterals_identity(mapScores, digitBucket1, digitBucket2)
     
     # Load to sameAsScore
     for literal1 in mapScores:

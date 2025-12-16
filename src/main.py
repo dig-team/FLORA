@@ -44,6 +44,7 @@ def get_params():
     parser.add_argument('--output', type=str, default='results.ttl', help='Output file name')
     parser.add_argument('--embedding', type=str, default=None, help='Embedding folder path for the input two KGs, e.g., emb/D_W_15K_V2/')
     parser.add_argument('--trainingdata', type=str, default=None, help='Training data file name if any')
+    parser.add_argument('--string_identity', type=bool, default=False, help='Whether to use string identity for literal matching')
     # Default datasets
     parser.add_argument('--dataset', type=str, default=None, help='Dataset name for KG alignment, e.g., OpenEA/D_W_15K_V2/')
     # Optional parameters for customized datasets
@@ -153,7 +154,7 @@ if __name__ == '__main__':
         import literals
         literals.compute_literal_embeddings(kb1, kb2, emb_path)
         Announce.done()
-    init.mapLiterals(kb1, kb2, emb_path, sameAsScores, params['init'])
+    init.mapLiterals(kb1, kb2, emb_path, sameAsScores, params['string_identity'], params['init'])
     Announce.done()
 
 
