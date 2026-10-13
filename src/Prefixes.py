@@ -1,3 +1,10 @@
+"""
+This file is part of FLORA, an unsupervised system for automatic knowledge graph (KG) alignment. 
+The file is licensed under the Creative Commons Attribution 4.0 International License (CC BY 4.0) by Yiwen Peng, Thomas Bonald, Fabian Suchanek and Lingyun Huang.
+
+Description: Prefix dictionaries used to compact and print RDF and knowledge graph URIs.
+"""
+
 ##########################################################################
 #             Prefixes
 ##########################################################################
@@ -38,7 +45,7 @@ prefixes = {
 "prv": "http://www.wikidata.org/prop/reference/value/",
 "prn": "http://www.wikidata.org/prop/reference/value-normalized/",
 "wdno": "http://www.wikidata.org/prop/novalue/",
-"ys": "http://yago-knowledge.org/schema#" 
+"ys": "http://yago-knowledge.org/schema#"
 }
 
 ##########################################################################

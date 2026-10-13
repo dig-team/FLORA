@@ -1,7 +1,258 @@
+"""
+This file is part of FLORA licensed under the Creative Commons Attribution 4.0 International License (CC BY 4.0).
+Portions of this file are adapted from the original FLORA implementation by Yiwen Peng, Thomas Bonald, and Fabian Suchanek, licensed under the same license.
+
+Description: Evaluation helpers for OpenEA, DBP15K, OAEI, DBP1M, DBpedia-YAGO alignment outputs, including result loading, post-processing, and metric computation.
+"""
+
 import os
 import math
+import bz2
+import re
 import scipy.stats as st
 import xml.etree.ElementTree as ET
+from collections import defaultdict
+from urllib.parse import unquote
+
+DBPEDIA_RESOURCE_PREFIX = 'http://dbpedia.org/resource/'
+YAGO_RESOURCE_PREFIX = 'http://yago-knowledge.org/resource/'
+WIKIPAGE_REDIRECTS = 'http://dbpedia.org/ontology/wikiPageRedirects'
+OWL_SAME_AS = 'http://www.w3.org/2002/07/owl#sameAs'
+
+
+def ranked_candidates(candidates):
+    """
+    Rank candidates deterministically: score desc, then target URI, to ensure reproducibility.
+    """
+    return sorted(candidates.items(), key=lambda item: (-item[1], item[0]))
+
+
+def load_dbpedia_redirects(redirect_path):
+    """
+    Load DBpedia wikiPageRedirects mappings.
+    """
+    redirects = {}
+    if redirect_path is None or not os.path.exists(redirect_path):
+        return redirects
+
+    open_func = bz2.open if redirect_path.endswith('.bz2') else open
+    with open_func(redirect_path, 'rt', encoding='UTF-8', errors='replace') as file:
+        for line in file:
+            terms = line.strip().split()
+            if len(terms) < 3:
+                continue
+            subject = terms[0].strip('<>')
+            predicate = terms[1].strip('<>')
+            target = terms[2].strip('<>')
+            if predicate == WIKIPAGE_REDIRECTS and \
+                    subject.startswith(DBPEDIA_RESOURCE_PREFIX) and \
+                    target.startswith(DBPEDIA_RESOURCE_PREFIX):
+                redirects[subject] = target
+    return redirects
+
+
+def load_dbpedia_yago_results(pred_path, gold_path, threshold=0.5,
+                              redirect_path=None, redirects=None, use_redirects=True):
+    """
+    Load DBpedia-YAGO gold pairs and FLORA predictions in DBpedia -> YAGO direction.
+
+    Parameters
+    ----------
+    pred_path : str
+        FLORA result TTL file with scored owl:sameAs lines.
+    gold_path : str
+        Gold alignment TTL file.
+    threshold : float
+        Only prediction pairs with score > threshold are loaded.
+    redirect_path : str
+        DBpedia wikiPageRedirects TTL/Turtle(.bz2) file.
+    redirects : dict
+        Optional DBpedia redirect map.
+    use_redirects : bool
+        Canonicalize DBpedia URIs by redirects. Defaults to True.
+
+    Returns
+    -------
+    gold : dict
+        Canonical DBpedia URI -> YAGO URI gold pairs.
+    sameAsscores : dict
+        Canonical DBpedia URI -> {YAGO URI: score} prediction scores.
+    info : dict
+        Loading statistics, including excluded conflicting gold sources.
+    """
+    prefixes = {
+        'yago': YAGO_RESOURCE_PREFIX,
+        'dbr': DBPEDIA_RESOURCE_PREFIX,
+        'owl': 'http://www.w3.org/2002/07/owl#',
+    }
+    # DBpedia gold links and FLORA predictions may use different URIs for the same entity
+    # when one side points to a redirected page. Canonicalizing DBpedia resources before
+    # comparison prevents these redirect aliases from being counted as false errors.
+    if redirects is not None:
+        redirect_map = redirects
+    elif use_redirects and redirect_path is not None:
+        redirect_map = load_dbpedia_redirects(redirect_path)
+    elif use_redirects:
+        raise ValueError('redirect_path or redirects must be provided when use_redirects=True')
+    else:
+        redirect_map = {}
+
+    def normalize_token(token, active_prefixes):
+        """Normalize a token by stripping whitespace, removing trailing periods, and expanding prefixes."""
+        token = token.strip()
+        if token.endswith('.'):
+            token = token[:-1].strip()
+        if token.startswith('<') and token.endswith('>'):
+            return token[1:-1]
+        if ':' in token and not re.match(r'^[a-zA-Z][a-zA-Z0-9+.-]*://', token):
+            prefix, suffix = token.split(':', 1)
+            if prefix in active_prefixes:
+                return active_prefixes[prefix] + suffix
+        return token
+
+    def canonicalize_dbpedia(uri):
+        """Canonicalize a DBpedia URI by following redirects until a final target is reached."""
+        seen = set()
+        current = uri
+        while current in redirect_map and current not in seen:
+            seen.add(current)
+            current = redirect_map[current]
+        return current
+
+    def parse_pair(left, right):
+        if left.startswith(DBPEDIA_RESOURCE_PREFIX) and right.startswith(YAGO_RESOURCE_PREFIX):
+            return canonicalize_dbpedia(left), right
+        if right.startswith(DBPEDIA_RESOURCE_PREFIX) and left.startswith(YAGO_RESOURCE_PREFIX):
+            return canonicalize_dbpedia(right), left
+        return None
+
+    def iter_ttl(path):
+        local_prefixes = prefixes.copy()
+        open_func = bz2.open if str(path).endswith('.bz2') else open
+        with open_func(path, 'rt', encoding='UTF-8', errors='replace') as file:
+            for line in file:
+                line = line.strip()
+                if not line or line.startswith('#'):
+                    continue
+                prefix_match = re.match(r'\s*@prefix\s+([^:\s]+):\s*<([^>]+)>\s*\.\s*$', line)
+                if prefix_match:
+                    local_prefixes[prefix_match.group(1)] = prefix_match.group(2)
+                    continue
+                terms = line.split()
+                if len(terms) < 3:
+                    continue
+                subject = normalize_token(terms[0], local_prefixes)
+                predicate = normalize_token(terms[1], local_prefixes)
+                obj = normalize_token(terms[2], local_prefixes)
+                score = None
+                if len(terms) >= 5:
+                    try:
+                        score = float(terms[4])
+                    except ValueError:
+                        score = None
+                yield subject, predicate, obj, score
+
+    raw_gold = defaultdict(set)
+    for subject, predicate, obj, _score in iter_ttl(gold_path):
+        if predicate not in {'owl:sameAs', OWL_SAME_AS}:
+            continue
+        pair = parse_pair(subject, obj)
+        if pair is None:
+            continue
+        dbpedia_uri, yago_uri = pair
+        raw_gold[dbpedia_uri].add(yago_uri)
+
+    gold_conflicts = {source: targets for source, targets in raw_gold.items() if len(targets) > 1} # conflicting gold sources with multiple targets
+    gold = {source: next(iter(targets)) for source, targets in raw_gold.items() if source not in gold_conflicts}
+
+    sameAsscores = {}
+    for subject, predicate, obj, score in iter_ttl(pred_path):
+        if predicate not in {'owl:sameAs', OWL_SAME_AS}:
+            continue
+        if score is None:
+            continue
+        if score <= threshold:
+            continue
+        pair = parse_pair(subject, obj)
+        if pair is None:
+            continue
+        dbpedia_uri, yago_uri = pair
+        if dbpedia_uri in gold_conflicts: # skip conflicting gold sources
+            continue
+        sameAsscores.setdefault(dbpedia_uri, {})
+        sameAsscores[dbpedia_uri][yago_uri] = max(score, sameAsscores[dbpedia_uri].get(yago_uri, float('-inf')))
+    return gold, sameAsscores
+
+def dbpedia_yago_eval(gold, sameAsscores, threshold=0.0, hits=(1, 10)):
+    """
+    Evaluate DBpedia-YAGO entity alignment results with a fixed score threshold.
+    """
+    def resource_name(uri):
+        name = uri.rsplit('/', 1)[-1].rsplit('#', 1)[-1]
+        name = unquote(name)
+        return re.sub(r'_u([0-9A-Fa-f]{4})_', lambda match: chr(int(match.group(1), 16)), name)
+
+    def rank_for_source(source, candidates):
+        source_name = resource_name(source)
+        return sorted(((target, float(score)) for target, score in candidates.items() if float(score) > threshold),
+            key=lambda item: (-item[1], 0 if resource_name(item[0]) == source_name else 1, item[0])) # sort by score desc, then exact name match, then target URI
+
+    top1_predictions = {}
+    hit_counts = {k: 0 for k in hits}
+    reciprocal_rank_sum = 0.0
+    gold_sources_with_candidates = 0
+
+    for source, candidates in sameAsscores.items():
+        ranked = rank_for_source(source, candidates)
+        if ranked:
+            top1_predictions[source] = ranked[0]
+
+    for source, gold_target in gold.items():
+        ranked = rank_for_source(source, sameAsscores.get(source, {}))
+        if not ranked:
+            continue
+        gold_sources_with_candidates += 1
+        for rank, (target, _score) in enumerate(ranked, start=1):
+            if target == gold_target:
+                reciprocal_rank_sum += 1 / rank
+                for k in hits:
+                    if rank <= k:
+                        hit_counts[k] += 1
+                break
+
+    tp = sum(1 for source, (target, _score) in top1_predictions.items() if gold.get(source) == target)
+    fp = len(top1_predictions) - tp
+    fn = len(gold) - tp
+    fp_source_absent = sum(1 for source in top1_predictions if source not in gold) # predicted source not in gold
+    fp_wrong_target = fp - fp_source_absent # predicted source in gold but wrong target
+
+    precision = tp / (tp + fp) if tp + fp > 0 else 0
+    recall = tp / (tp + fn) if tp + fn > 0 else 0
+    f1 = 2 * precision * recall / (precision + recall) if precision + recall > 0 else 0
+
+    metrics = {
+        'threshold': threshold,
+        'gold_pairs': len(gold),
+        'prediction_sources': len(top1_predictions),
+        'prediction_pairs': sum(1 for candidates in sameAsscores.values() for score in candidates.values() if float(score) > threshold),
+        'gold_source_coverage': gold_sources_with_candidates / len(gold) if gold else 0,
+        'tp': tp,
+        'fp': fp,
+        'fp_source_absent_from_gold': fp_source_absent,
+        'fp_wrong_target_for_gold_source': fp_wrong_target,
+        'fn': fn,
+        'precision': precision,
+        'recall': recall,
+        'f1': f1,
+        'mrr': reciprocal_rank_sum / len(gold) if gold else 0,
+    }
+    for k in hits:
+        metrics[f'hit@{k}'] = hit_counts[k] / len(gold) if gold else 0
+
+    print('Precision: {:.4f}, Recall: {:.4f}, F1: {:.4f}'.format(precision, recall, f1))
+    print('Hit@1: {:.4f}, Hit@10: {:.4f}, MRR: {:.4f}'.format(metrics.get('hit@1', 0), metrics.get('hit@10', 0), metrics['mrr']))
+
+    return metrics
 
 
 def load_openea_ref(loc):
@@ -15,12 +266,12 @@ def load_openea_ref(loc):
 
 def openea_eval(maxAssignment, y_gold, save_path=None):
     y_pred = set()
-    for e1 in maxAssignment:
+    for e1 in sorted(maxAssignment):
         # if e1.startswith('dbr:'):
         if e1.startswith('http://dbpedia.org/resource/'):
-            for e2 in maxAssignment[e1]:
-                y_pred.add(tuple([e1, e2]))
-                break # only select the first one
+            ranked = ranked_candidates(maxAssignment[e1])
+            if ranked:
+                y_pred.add(tuple([e1, ranked[0][0]])) # only select the first one
     
     # calculate precision, recall, f1
     tp = len(y_gold.intersection(y_pred))
@@ -34,7 +285,7 @@ def openea_eval(maxAssignment, y_gold, save_path=None):
     print(f'F1: {f1:.4f}')
     if save_path is not None:
         with open(save_path, 'w') as f:
-            for e1, e2 in y_pred:
+            for e1, e2 in sorted(y_pred):
                 f.write(f'{e1}\t{e2}\t{maxAssignment[e1][e2]}\n')
         print(f'\nSaved final results to "{save_path}"')
 
@@ -80,31 +331,32 @@ def load_ent_results(file_path, prefix, threshold=0.0):
 
 def bilateral_max_assign(sameASscore):
     match_e1_to_e2, match_e2_to_e1 = {}, {}
-    for e1, matches in sameASscore.items():
+    for e1 in sorted(sameASscore):
+        matches = sameASscore[e1]
         if matches:
             max_score = max(matches.values())
-            for e2 in matches:
-                if matches[e2] == max_score:
+            for e2, score in ranked_candidates(matches):
+                if score == max_score:
                     if e1 not in match_e1_to_e2:
                         match_e1_to_e2[e1] = {}
-                    match_e1_to_e2[e1][e2] = matches[e2]
+                    match_e1_to_e2[e1][e2] = score
                     if e2 not in match_e2_to_e1:
                         match_e2_to_e1[e2] = {}
-                        match_e2_to_e1[e2][e1] = matches[e2]
+                        match_e2_to_e1[e2][e1] = score
                         continue
 
                     max_score_e2 = max(match_e2_to_e1[e2].values())
-                    if matches[e2] > max_score_e2:
-                        match_e2_to_e1[e2] = {e1: matches[e2]}
-                    elif max_score_e2 == matches[e2]:
-                        match_e2_to_e1[e2][e1] = matches[e2]
+                    if score > max_score_e2:
+                        match_e2_to_e1[e2] = {e1: score}
+                    elif max_score_e2 == score:
+                        match_e2_to_e1[e2][e1] = score
     res_max_assign = {} # bilateral max assignment
-    for e2 in match_e2_to_e1:
+    for e2 in sorted(match_e2_to_e1):
         # exact match case, avoid duplicates
         if e2 in match_e2_to_e1[e2]:
             res_max_assign[e2] = {e2: match_e2_to_e1[e2][e2]}
             continue
-        for e1 in match_e2_to_e1[e2]:
+        for e1, _score in ranked_candidates(match_e2_to_e1[e2]):
             if e1 in match_e1_to_e2 and e2 in match_e1_to_e2.get(e1, {}):
                 if e2 not in res_max_assign:
                     res_max_assign[e2] = {}
@@ -162,6 +414,64 @@ def dbp15k_eval(ref_pairs, sameAsscores):
     print(f'Hit@1: {hit1 / len(ref_pairs):.4f}')
     print(f'Hit@10: {hit10 / len(ref_pairs):.4f}')
     print(f'MRR: {mrr / len(ref_pairs):.4f}')
+
+
+def load_dbp1m_ref(path):
+    """Load a two-column DBP1M train/test links file."""
+    ref_pairs = {}
+    with open(path, encoding='UTF-8', errors='replace') as file:
+        for line in file:
+            terms = line.rstrip('\n').split('\t')
+            if len(terms) >= 2:
+                ref_pairs[terms[0].strip().strip('<>')] = terms[1].strip().strip('<>')
+    return ref_pairs
+
+
+def load_dbp1m_results(path, ref_pairs, threshold=0.0):
+    """Load scored DBP1M owl:sameAs results in the gold source direction."""
+    sameAsscores = {}
+    sources = set(ref_pairs)
+    with open(path, encoding='UTF-8', errors='replace') as file:
+        for line in file:
+            terms = line.rstrip('\n').split('\t')
+            if len(terms) < 5 or terms[1].strip().strip('<>') not in {'owl:sameAs', OWL_SAME_AS}:
+                continue
+            try:
+                score = float(terms[4])
+            except ValueError:
+                continue
+            if score <= threshold:
+                continue
+            left, right = (term.strip().strip('<>') for term in (terms[0], terms[2]))
+            if left in sources:
+                source, target = left, right
+            elif right in sources:
+                source, target = right, left
+            else:
+                continue
+            candidates = sameAsscores.setdefault(source, {})
+            candidates[target] = max(score, candidates.get(target, float('-inf')))
+    return sameAsscores
+
+def dbp1m_eval(ref_pairs, sameAsscores):
+    if not ref_pairs:
+        raise ValueError('ref_pairs must not be empty')
+    hit1 = hit10 = mrr = 0.0
+    for source, target in ref_pairs.items():
+        for rank, (candidate, _score) in enumerate(
+                ranked_candidates(sameAsscores.get(source, {})), start=1):
+            if candidate == target:
+                hit1 += rank == 1
+                hit10 += rank <= 10
+                mrr += 1 / rank
+                break
+    metrics = {'hit@1': hit1 / len(ref_pairs),
+               'hit@10': hit10 / len(ref_pairs),
+               'mrr': mrr / len(ref_pairs)}
+    print(f"Hit@1: {metrics['hit@1']:.4f}")
+    print(f"Hit@10: {metrics['hit@10']:.4f}")
+    print(f"MRR: {metrics['mrr']:.4f}")
+    return metrics
 
 
 def confidence_interval(p, n, confidence=0.95):
@@ -303,13 +613,15 @@ def post_process_oaei_relation_results(prefix1, prefix2, rel_pred_same, rel_pred
     # Prioritize the sameAs matches
     y_pred_property_post = {}
     for k, preds in rel_pred_same.items():
-        tmp = sorted(preds.items(), key=lambda x: x[1], reverse=True)
-        max_score = tmp[0][1]
-        candidate = [x for x in tmp if x[1] == max_score]
-        for uri, score in candidate:
-            if float(score) > threshold and uri.startswith('<'+prefix2+'property/'):
-                y_pred_property_post.setdefault(k, {})[uri] = float(score)
-                break
+        candidates = [
+            (uri, float(score)) for uri, score in preds.items()
+            if uri.startswith('<' + prefix2 + 'property/')
+        ]
+        if not candidates:
+            continue
+        uri, score = sorted(candidates, key=lambda item: (-item[1], item[0]))[0]
+        if score > threshold:
+            y_pred_property_post.setdefault(k, {})[uri] = score
     # Find more equivalent properties from subrelations (quasi equivalence r\cong r')
     for pred in rel_pred_similar:
         if pred in y_pred_property_post: # sameAs match
@@ -333,12 +645,14 @@ def post_process_oaei_results(cls_gt, inst_gt, rel_gt,
     for k, v in inst_gt.items():
         if k not in inst_pred:
             continue
-        # the one with maximum score
-        sort_pred = sorted(inst_pred[k].items(), key=lambda x: x[1], reverse=True)
-        candidate = [x for x in sort_pred if x[0].startswith('<' + prefix2 + 'resource/')]
-        if candidate:
-            pred, score = candidate[0][0], candidate[0][1]
-            for ent in candidate:
+        candidates = [
+            (uri, float(score)) for uri, score in inst_pred[k].items()
+            if uri.startswith('<' + prefix2 + 'resource/')
+        ]
+        if candidates:
+            candidates.sort(key=lambda item: (-item[1], item[0]))
+            pred, score = candidates[0]
+            for ent in candidates:
                 if ent[1] < score:
                     break
                 # Multiple candidates, select the exact match one if exists
@@ -347,16 +661,22 @@ def post_process_oaei_results(cls_gt, inst_gt, rel_gt,
                     score = ent[1]
                     break
             # 1-to-1 constraint check
-            if float(score) > instAlign.get(pred, {}).get(k, 0):
-                instAlign[pred] = {k: float(score)}
+            if score > instAlign.get(pred, {}).get(k, 0):
+                instAlign[pred] = {k: score}
 
     # Classes
     clsAlign = {}
     for k, v in cls_gt.items():
         if k not in cls_pred:
             continue
-        # the one with maximum score
-        pred, score = sorted(cls_pred[k].items(), key=lambda x: x[1], reverse=True)[0]
+        candidates = [
+            item for item in cls_pred[k].items()
+            if item[0].startswith('<' + prefix2 + 'class/')
+        ]
+        if not candidates:
+            continue
+        # Select the highest-scoring target class deterministically.
+        pred, score = sorted(candidates, key=lambda item: (-float(item[1]), item[0]))[0]
         # 1-to-1 constraint check
         if float(score) > clsAlign.get(pred, {}).get(k, 0):
             clsAlign[pred] = {k: float(score)}
@@ -372,6 +692,21 @@ def post_process_oaei_results(cls_gt, inst_gt, rel_gt,
         # 1-to-1 constraint check
         if float(score) > relAlign.get(pred, {}).get(k, 0):
             relAlign[pred] = {k: float(score)}
+    instAlign = {
+        source: (target, score)
+        for target, sources in instAlign.items()
+        for source, score in sources.items()
+    }
+    clsAlign = {
+        source: (target, score)
+        for target, sources in clsAlign.items()
+        for source, score in sources.items()
+    }
+    relAlign = {
+        source: (target, score)
+        for target, sources in relAlign.items()
+        for source, score in sources.items()
+    }
     return instAlign, clsAlign, relAlign
 
 
@@ -393,19 +728,17 @@ def oaei_kg_eval(cls_gt, inst_gt, rel_gt,
     # Instances
     tp, fp, fn = 0, 0, 0
     for k, v in inst_gt.items():
-        if v not in instAlign:
+        if k not in instAlign:
             fn += 1
             continue
-        score = instAlign[v].get(k, 0)
-        pred = list(instAlign[v].keys())[0] if instAlign[v] else None
+        pred, score = instAlign[k]
         if float(score) <= threshold:
             fn += 1
             continue
-        if pred == k:
-            final_results["instances"][k] = (v, score)
+        final_results["instances"][k] = (pred, score)
+        if pred == v:
             tp += 1
         else:
-            final_results["instances"][pred] = (v, score)
             fp += 1
             fn += 1
 
@@ -420,20 +753,18 @@ def oaei_kg_eval(cls_gt, inst_gt, rel_gt,
     # Classes
     tp, fp, fn = 0, 0, 0
     for k, v in cls_gt.items():
-        if v not in clsAlign:
+        if k not in clsAlign:
             fn += 1
             continue
-        pred = list(clsAlign[v].keys())[0] if clsAlign[v] else None
-        score = clsAlign[v].get(k, 0)
-        if float(score) <= 0:
+        pred, score = clsAlign[k]
+        if float(score) <= threshold:
             fn += 1
             continue
-        if pred == k:
-            final_results["classes"][k] = (v, score)
+        final_results["classes"][k] = (pred, score)
+        if pred == v:
             tp += 1
         else:
-            final_results["classes"][pred] = (v, score)
-            print(f'Class {k} predicted as {pred} with score {score}')  # Debugging line
+            #print(f'Class {k} predicted as {pred} with score {score}')
             fp += 1
             fn += 1
     tp_total += tp
@@ -447,19 +778,17 @@ def oaei_kg_eval(cls_gt, inst_gt, rel_gt,
     # Properties
     tp, fp, fn = 0, 0, 0
     for k, v in rel_gt.items():
-        if v not in relAlign:
+        if k not in relAlign:
             fn += 1
             continue
-        pred = list(relAlign[v].keys())[0] if relAlign[v] else None
-        score = relAlign[v].get(k, 0)
+        pred, score = relAlign[k]
         if score <= threshold:
             fn += 1
             continue
-        if pred == k:
-            final_results["properties"][k] = (v, score)
+        final_results["properties"][k] = (pred, score)
+        if pred == v:
             tp += 1
         else:
-            final_results["properties"][pred] = (v, score)
             fp += 1
             fn += 1
     # evaluate overall
@@ -481,6 +810,3 @@ def oaei_kg_eval(cls_gt, inst_gt, rel_gt,
                 for k, (pred, score) in results.items():
                     f.write(f'{k}\t{pred}\t{score}\n')
         print(f'\nSaved final results to "{save_path}"')
-
-
-
