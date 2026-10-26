@@ -127,7 +127,7 @@ FLORA+ uses datasets from:
 
 Due to memory limitations, all datasets and pretrained embeddings used in the paper are on the [drive](https://nextcloud.r2.enst.fr/nextcloud/index.php/s/xj3oStmzLcknicr?opendetails=). Download and unzip the files from the drive into the matching subdirectories under `../data/`.
 
-For detailed statistics on each dataset, please refer to `statistics.pdf`.
+For detailed statistics on each dataset, please refer to `dataset_statistics.pdf` under `../docs/`.
 
 After preparing the datasets and embeddings, use the commands in [scripts/run.sh](scripts/run.sh) to reproduce the experimental results. To run all configured experiments, execute `bash scripts/run.sh` from the repository root.
 
