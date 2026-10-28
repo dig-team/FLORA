@@ -122,10 +122,10 @@ FLORA+ uses datasets from:
 - [OpenEA](https://github.com/nju-websoft/OpenEA): `D_W_15K_V1`, `D_W_15K_V2`
 - [DBP15K](https://github.com/nju-websoft/JAPE): `fr_en`, `ja_en`, `zh_en`
 - [OAEI KG Track](https://oaei.ontologymatching.org/2024/knowledgegraph/index.html): `memoryalpha-stexpanded`, `starwars-swtor`
-- [DBP1M](https://github.com/ZJU-DAILY/LargeEA):`de_en`, `fr_en`,
+- [DBP1M](https://github.com/ZJU-DAILY/LargeEA): `de_en`, `fr_en`,
 - **DBpedia-YAGO**: a large-scale, real-world EA dataset based on English DBpedia and YAGO data constructed by ourselves.
 
-Due to memory limitations, all datasets and pretrained embeddings used in the paper are on the [drive](https://nextcloud.r2.enst.fr/nextcloud/index.php/s/xj3oStmzLcknicr?opendetails=). Download and unzip the files from the drive into the matching subdirectories under `../data/`.
+Due to memory limitations, all datasets and pretrained embeddings used in the paper are on the [drive](https://drive.google.com/file/d/1Qg920W-UckIlcYdYknJnC2cjHJSEHNfE/view?usp=drive_link). Download and unzip the files from the drive into the matching subdirectories under `../data/`.
 
 For detailed statistics on each dataset, please refer to `statistics.pdf`.
 
